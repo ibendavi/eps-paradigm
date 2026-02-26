@@ -22,6 +22,17 @@
   html { scroll-behavior:smooth; }
   body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; }
 
+  /* Password overlay */
+  #pw-overlay { position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; }
+  #pw-overlay.hidden { display:none; }
+  #pw-overlay h2 { font-size:1.8rem; margin-bottom:0.5rem; }
+  #pw-overlay p { color:var(--muted); margin-bottom:1.5rem; font-size:0.95rem; }
+  #pw-overlay input { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1.25rem; font-size:1.1rem; color:var(--text); text-align:center; width:240px; outline:none; }
+  #pw-overlay input:focus { border-color:var(--accent); }
+  #pw-overlay .pw-err { color:var(--red); font-size:0.85rem; margin-top:0.75rem; min-height:1.2em; }
+  #pw-overlay button { margin-top:1rem; background:var(--accent); color:#fff; border:none; padding:0.65rem 2rem; border-radius:8px; font-size:1rem; cursor:pointer; transition:opacity 0.2s; }
+  #pw-overlay button:hover { opacity:0.85; }
+
   /* Navigation */
   nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,10,15,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
   nav .inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0.75rem 2rem; }
@@ -156,6 +167,14 @@
 </style>
 </head>
 <body>
+
+<div id="pw-overlay">
+  <h2>The Max EPS Paradigm</h2>
+  <p>Enter password to access the site</p>
+  <input type="password" id="pw-input" placeholder="Password" autofocus>
+  <button onclick="checkPw()">Enter</button>
+  <div class="pw-err" id="pw-err"></div>
+</div>
 
 <nav>
   <div class="inner">
@@ -884,6 +903,25 @@ function updatePayout() {
 }
 ['pay-cash','pay-pe','pay-rf','pay-proj','pay-iy'].forEach(id => document.getElementById(id).addEventListener('input', updatePayout));
 updatePayout();
+
+// ===== Password gate =====
+function checkPw() {
+  const input = document.getElementById('pw-input').value;
+  if (input === 'EPS') {
+    document.getElementById('pw-overlay').classList.add('hidden');
+    sessionStorage.setItem('eps-auth', '1');
+  } else {
+    document.getElementById('pw-err').textContent = 'Incorrect password. Try again.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPw();
+});
+if (sessionStorage.getItem('eps-auth') === '1') {
+  document.getElementById('pw-overlay').classList.add('hidden');
+}
 </script>
 
 </body>
