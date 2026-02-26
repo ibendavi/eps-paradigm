@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <title>The Max EPS Paradigm | Ben-David &amp; Chinco</title>
 <style>
   :root {
@@ -20,7 +22,10 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; }
+  body { font-family:'Source Serif 4',Georgia,serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; }
+  h1,h2,h3,h4,.paper-num,.logo,.tab-btn,.section-label { font-family:'Playfair Display',Georgia,serif; }
+  nav .links a, .calc-row label, .calc-result .label, .eq-label, .paper-desc, footer, .about-card .bio, .about-card .affil { font-family:'Source Serif 4',Georgia,serif; }
+  .val, .calc-result .big, code, pre { font-family:'JetBrains Mono','Courier New',monospace; }
 
   /* Password overlay */
   #pw-overlay { position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; }
@@ -211,9 +216,9 @@
       <a href="#framework">Framework</a>
       <a href="#calculator">Calculator</a>
       <a href="#capital-structure">Capital Structure</a>
-      <a href="#pricing">Pricing</a>
       <a href="#investment">Investment</a>
       <a href="#payout">Payout</a>
+      <a href="#pricing">Pricing</a>
       <a href="#papers">Papers</a>
       <a href="#about">About</a>
     </div>
@@ -518,59 +523,11 @@
 </section>
 
 
-<!-- ===== PAPER 2: PRICING ===== -->
-<section id="pricing" class="fade-in">
-  <div class="paper-section">
-    <div class="paper-header">
-      <div class="paper-num" style="background:rgba(0,158,115,0.15);color:var(--accent2)">2</div>
-      <div>
-        <h3>Expected EPS &times; Trailing P/E: Pricing Without Discounting</h3>
-        <p class="paper-desc">How do investors actually price stocks? Not by discounting future cash flows. They multiply expected earnings times a backward-looking multiple.</p>
-      </div>
-    </div>
-
-    <p>FINRA Rule 2241 requires analysts to explain their valuation method in every report. In a sample of <strong>513 analyst reports</strong>, 76.8% set price targets by multiplying expected EPS times the company's trailing P/E ratio. Only 30.2% even mention DCF analysis.</p>
-
-    <div class="key-eq">
-      <strong>How analysts actually price:</strong> Price Target = E[EPS] &times; Trailing P/E
-    </div>
-
-    <div class="calc-container">
-      <h3>Try it: The Analyst's Formula</h3>
-      <div class="calc-row">
-        <label>Expected EPS ($/share):</label>
-        <input type="range" id="a-eps" min="1" max="30" value="11.50" step="0.25">
-        <span class="val" id="a-eps-val">$11.50</span>
-      </div>
-      <div class="calc-row">
-        <label>Trailing P/E (avg 3yr):</label>
-        <input type="range" id="a-pe" min="5" max="60" value="21" step="0.5">
-        <span class="val" id="a-pe-val">21.0&times;</span>
-      </div>
-      <div class="calc-result">
-        <div class="big" id="pt-result" style="color:var(--accent2)">$241.50</div>
-        <div class="label">Implied Price Target = E[EPS] &times; Trailing P/E</div>
-        <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted)">This simple formula explains R&sup2; &asymp; 90% of price-target variation in IBES</div>
-      </div>
-    </div>
-
-    <p><strong>Key insight:</strong> A trailing P/E is <strong>backward-looking</strong>. The Gordon model's "correct" multiple is forward-looking: 1/(r &minus; g). But analysts don't use it. They ask: "How did the market price last year's earnings?" This is yield-based pricing using comps, not discounted cash flow.</p>
-
-    <ul class="prediction-list mixed-list">
-      <li>94.5% of reports use some form of trailing multiple</li>
-      <li>Trailing PEs produce price targets that are roughly correct on average</li>
-      <li>The simple model predicts how price targets and market prices respond to earnings news</li>
-      <li>EPS surprises mechanically move prices because analysts re-apply the same multiple to updated earnings</li>
-    </ul>
-  </div>
-</section>
-
-
-<!-- ===== PAPER 3: INVESTMENT ===== -->
+<!-- ===== PAPER 2: INVESTMENT ===== -->
 <section id="investment" class="fade-in">
   <div class="paper-section">
     <div class="paper-header">
-      <div class="paper-num" style="background:rgba(244,109,67,0.15);color:var(--orange)">3</div>
+      <div class="paper-num" style="background:rgba(244,109,67,0.15);color:var(--orange)">2</div>
       <div>
         <h3>Capital Budgeting for EPS Maximizers</h3>
         <p class="paper-desc">Maximizing EPS &ne; minimizing investment. EPS maximizers use real investment to arbitrage between asset and capital markets.</p>
@@ -645,7 +602,7 @@
 <section id="payout" class="fade-in">
   <div class="paper-section">
     <div class="paper-header">
-      <div class="paper-num" style="background:rgba(254,196,79,0.15);color:var(--yellow)">4</div>
+      <div class="paper-num" style="background:rgba(254,196,79,0.15);color:var(--yellow)">3</div>
       <div>
         <h3>EPS-Maximizing Payout Policy</h3>
         <p class="paper-desc">Cash retention has a cost: the earnings yield. Return cash when you can't beat that yield by investing. Repurchases are accretive; dividends are not.</p>
@@ -727,6 +684,54 @@
     </div>
 
     <p><strong>Why dividends are dominated:</strong> Repurchases and dividends both deliver the same value to shareholders. But only repurchases boost EPS. Hence, EPS maximizers always prefer buybacks. When a firm pays dividends anyway, it must be due to forces outside the model&mdash;and the prediction is this happens most for <strong>marginal value stocks</strong> where the accretive pull of buybacks is weakest.</p>
+  </div>
+</section>
+
+
+<!-- ===== PAPER 4: PRICING (Investor Side) ===== -->
+<section id="pricing" class="fade-in">
+  <div class="paper-section">
+    <div class="paper-header">
+      <div class="paper-num" style="background:rgba(0,158,115,0.15);color:var(--accent2)">4</div>
+      <div>
+        <h3>Expected EPS &times; Trailing P/E: Pricing Without Discounting</h3>
+        <p class="paper-desc">The investor side of the paradigm. How do investors actually price stocks? Not by discounting future cash flows. They multiply expected earnings times a backward-looking multiple.</p>
+      </div>
+    </div>
+
+    <p>FINRA Rule 2241 requires analysts to explain their valuation method in every report. In a sample of <strong>513 analyst reports</strong>, 76.8% set price targets by multiplying expected EPS times the company's trailing P/E ratio. Only 30.2% even mention DCF analysis.</p>
+
+    <div class="key-eq">
+      <strong>How analysts actually price:</strong> Price Target = E[EPS] &times; Trailing P/E
+    </div>
+
+    <div class="calc-container">
+      <h3>Try it: The Analyst's Formula</h3>
+      <div class="calc-row">
+        <label>Expected EPS ($/share):</label>
+        <input type="range" id="a-eps" min="1" max="30" value="11.50" step="0.25">
+        <span class="val" id="a-eps-val">$11.50</span>
+      </div>
+      <div class="calc-row">
+        <label>Trailing P/E (avg 3yr):</label>
+        <input type="range" id="a-pe" min="5" max="60" value="21" step="0.5">
+        <span class="val" id="a-pe-val">21.0&times;</span>
+      </div>
+      <div class="calc-result">
+        <div class="big" id="pt-result" style="color:var(--accent2)">$241.50</div>
+        <div class="label">Implied Price Target = E[EPS] &times; Trailing P/E</div>
+        <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted)">This simple formula explains R&sup2; &asymp; 90% of price-target variation in IBES</div>
+      </div>
+    </div>
+
+    <p><strong>Key insight:</strong> A trailing P/E is <strong>backward-looking</strong>. The Gordon model's "correct" multiple is forward-looking: 1/(r &minus; g). But analysts don't use it. They ask: "How did the market price last year's earnings?" This is yield-based pricing using comps, not discounted cash flow.</p>
+
+    <ul class="prediction-list mixed-list">
+      <li>94.5% of reports use some form of trailing multiple</li>
+      <li>Trailing PEs produce price targets that are roughly correct on average</li>
+      <li>The simple model predicts how price targets and market prices respond to earnings news</li>
+      <li>EPS surprises mechanically move prices because analysts re-apply the same multiple to updated earnings</li>
+    </ul>
   </div>
 </section>
 
