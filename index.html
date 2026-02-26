@@ -203,8 +203,10 @@
   .demo-verdict { font-weight:800; font-size:clamp(0.9rem,2vw,1.15rem); letter-spacing:0.12em; min-width:110px; text-align:center; transition:all 0.3s; font-family:'Playfair Display',Georgia,serif; }
   .demo-verdict.accretive { color:var(--accent2); }
   .demo-verdict.dilutive { color:var(--red); }
-  .demo-buttons { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; margin:1.5rem 0 0.5rem; }
-  .demo-btn { background:transparent; border:1.5px solid; border-radius:8px; padding:0.5rem 1rem; cursor:pointer; font-size:0.82rem; font-family:'Source Serif 4',Georgia,serif; transition:all 0.2s; }
+  .demo-groups { display:flex; gap:1.25rem; justify-content:center; flex-wrap:wrap; margin:1.5rem 0 0.5rem; }
+  .demo-group { display:flex; flex-direction:column; gap:0.4rem; }
+  .demo-group-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); text-align:center; margin-bottom:0.1rem; font-family:'Source Serif 4',Georgia,serif; }
+  .demo-btn { background:transparent; border:1.5px solid; border-radius:8px; padding:0.45rem 0.85rem; cursor:pointer; font-size:0.78rem; font-family:'Source Serif 4',Georgia,serif; transition:all 0.2s; white-space:nowrap; }
   .demo-btn:hover { background:rgba(255,255,255,0.04); transform:translateY(-1px); }
   .demo-explanation { background:var(--bg3); border-radius:8px; padding:1rem 1.5rem; font-size:0.85rem; color:var(--muted); margin-top:1rem; text-align:center; line-height:1.6; }
   .demo-flash { animation: flash-green 0.5s ease; }
@@ -444,11 +446,33 @@
       <div class="demo-verdict" id="d-verdict"></div>
     </div>
 
-    <div class="demo-buttons">
-      <button class="demo-btn" onclick="demoAction('buyback')" style="border-color:var(--accent2);color:var(--accent2)">&#8593; Buy back 1M shares</button>
-      <button class="demo-btn" onclick="demoAction('issue')" style="border-color:var(--red);color:var(--red)">&#8595; Issue 1M new shares</button>
-      <button class="demo-btn" onclick="demoAction('lever')" style="border-color:var(--accent);color:var(--accent)">&#9878; Borrow $40M at 4%, repurchase</button>
-      <button class="demo-btn" onclick="demoAction('reset')" style="border-color:var(--muted);color:var(--muted)">Reset</button>
+    <div class="demo-groups">
+      <div class="demo-group">
+        <div class="demo-group-label">Shares</div>
+        <button class="demo-btn" onclick="demoAction('buyback')" style="border-color:var(--accent2);color:var(--accent2)">&#8593; Repurchase 1M shares</button>
+        <button class="demo-btn" onclick="demoAction('issue')" style="border-color:var(--red);color:var(--red)">&#8595; Issue 1M new shares</button>
+      </div>
+      <div class="demo-group">
+        <div class="demo-group-label">Leverage</div>
+        <button class="demo-btn" onclick="demoAction('lever')" style="border-color:var(--accent);color:var(--accent)">&#9878; Borrow $40M at 4%, buy back</button>
+      </div>
+      <div class="demo-group">
+        <div class="demo-group-label">M&amp;A (stock deals)</div>
+        <button class="demo-btn" onclick="demoAction('acq_low')" style="border-color:var(--accent2);color:var(--accent2)">&#9733; Acquire low-P/E target</button>
+        <button class="demo-btn" onclick="demoAction('acq_high')" style="border-color:var(--red);color:var(--red)">&#9733; Acquire high-P/E target</button>
+      </div>
+      <div class="demo-group">
+        <div class="demo-group-label">Investment</div>
+        <button class="demo-btn" onclick="demoAction('project')" style="border-color:var(--accent);color:var(--accent)">&#9881; Fund project (8% yield)</button>
+      </div>
+      <div class="demo-group">
+        <div class="demo-group-label">Payout</div>
+        <button class="demo-btn" onclick="demoAction('dividend')" style="border-color:var(--yellow);color:var(--yellow)">&#10070; Pay $20M dividend</button>
+      </div>
+      <div class="demo-group">
+        <div class="demo-group-label">&nbsp;</div>
+        <button class="demo-btn" onclick="demoAction('reset')" style="border-color:var(--muted);color:var(--muted)">Reset</button>
+      </div>
     </div>
 
     <div class="demo-explanation" id="d-explain" style="display:none"></div>
@@ -1212,8 +1236,8 @@ highlightProblem('cap');
 
 // ===== Accretion / Dilution Demo =====
 let demoState = { earnings: 400, shares: 100 };
-const DEMO_PRICE = 40; // $40/share, P/E=10, EY=10%
-const DEMO_BASE_EPS = 4.00;
+const DEMO_PRICE = 40;  // $40/share  =>  P/E = 10,  EY = 10%
+const DEMO_RF = 0.04;   // risk-free 4%
 
 function demoAction(action) {
   const prev = demoState.earnings / demoState.shares;
@@ -1236,19 +1260,53 @@ function demoAction(action) {
   }
 
   if (action === 'buyback') {
+    // Repurchase 1M shares at market price
     demoState.shares -= 1;
     explain = 'Retired 1M shares at $' + DEMO_PRICE + '/share. Same earnings, fewer shares \u2192 each remaining share gets a bigger slice.';
+
   } else if (action === 'issue') {
+    // Issue 1M new shares at market price
     demoState.shares += 1;
-    explain = 'Issued 1M new shares at $' + DEMO_PRICE + '/share. Same earnings, more shares \u2192 each share\u2019s slice shrinks.';
+    explain = 'Issued 1M new shares at $' + DEMO_PRICE + '/share. Same earnings spread over more shares \u2192 each share\u2019s slice shrinks.';
+
   } else if (action === 'lever') {
-    const borrowed = 40;
-    const rate = 0.04;
+    // Borrow $40M at 4%, use proceeds to repurchase shares
+    const borrowed = 40, rate = 0.04;
     const interest = borrowed * rate;
     const sharesBought = borrowed / DEMO_PRICE;
     demoState.earnings -= interest;
     demoState.shares -= sharesBought;
-    explain = 'Borrowed $40M at 4% (interest cost: $' + interest.toFixed(1) + 'M/yr). Used proceeds to retire ' + sharesBought.toFixed(0) + 'M shares at $' + DEMO_PRICE + '. Earnings fell $' + interest.toFixed(1) + 'M but shares fell ' + sharesBought.toFixed(0) + 'M \u2014 net gain because <strong style="color:var(--text)">earnings yield (10%) > interest rate (4%)</strong>. This is the core logic of the capital structure paper.';
+    explain = 'Borrowed $40M at 4% (interest: \u2212$' + interest.toFixed(1) + 'M/yr). Retired ' + sharesBought.toFixed(0) + 'M shares at $' + DEMO_PRICE + '. Earnings fell $' + interest.toFixed(1) + 'M but shares fell by ' + sharesBought.toFixed(0) + 'M \u2014 net gain because <strong style="color:var(--text)">earnings yield (10%) > interest rate (4%)</strong>. This is the core logic of the capital structure paper.';
+
+  } else if (action === 'acq_low') {
+    // Acquire a low-P/E target using stock (all-stock deal)
+    // Target: $5M earnings, P/E = 8 => price $40M => issue 1M shares
+    const tgtEarn = 5, tgtPE = 8, tgtPrice = tgtEarn * tgtPE;
+    const newShares = tgtPrice / DEMO_PRICE;
+    demoState.earnings += tgtEarn;
+    demoState.shares += newShares;
+    explain = 'All-stock acquisition. Target earns $' + tgtEarn + 'M at P/E\u00a0=\u00a0' + tgtPE + ' (price $' + tgtPrice + 'M). Issued ' + newShares.toFixed(0) + 'M shares at $' + DEMO_PRICE + '. Accretive because <strong style="color:var(--text)">target\u2019s earnings yield (' + (100/tgtPE).toFixed(1) + '%) > your earnings yield (10%)</strong>. You bought cheap earnings with expensive equity.';
+
+  } else if (action === 'acq_high') {
+    // Acquire a high-P/E target using stock (all-stock deal)
+    // Target: $2M earnings, P/E = 25 => price $50M => issue 1.25M shares
+    const tgtEarn = 2, tgtPE = 25, tgtPrice = tgtEarn * tgtPE;
+    const newShares = tgtPrice / DEMO_PRICE;
+    demoState.earnings += tgtEarn;
+    demoState.shares += newShares;
+    explain = 'All-stock acquisition. Target earns $' + tgtEarn + 'M at P/E\u00a0=\u00a0' + tgtPE + ' (price $' + tgtPrice + 'M). Issued ' + newShares.toFixed(1) + 'M shares at $' + DEMO_PRICE + '. Dilutive because <strong style="color:var(--text)">target\u2019s earnings yield (' + (100/tgtPE).toFixed(0) + '%) < your earnings yield (10%)</strong>. You bought expensive earnings with cheap equity. This is why EPS maximizers use cash or debt for high-P/E targets.';
+
+  } else if (action === 'project') {
+    // Invest $20M in a project with 8% income yield, funded from cash
+    const invest = 20, projYield = 0.08;
+    const projIncome = invest * projYield;
+    const lostInterest = invest * DEMO_RF;
+    demoState.earnings += projIncome - lostInterest;
+    explain = 'Invested $20M in a project earning 8%/yr (+$' + projIncome.toFixed(1) + 'M). Funded from cash (lost ' + (DEMO_RF*100).toFixed(0) + '% interest: \u2212$' + lostInterest.toFixed(1) + 'M). Net: +$' + (projIncome - lostInterest).toFixed(1) + 'M to earnings. Accretive because <strong style="color:var(--text)">project income yield (8%) > cash yield (' + (DEMO_RF*100).toFixed(0) + '%)</strong>. This is the EPS investment rule.';
+
+  } else if (action === 'dividend') {
+    // Pay a cash dividend — no immediate effect on EPS
+    explain = '$20M paid out as dividends. Dividends <strong style="color:var(--text)">bypass the income statement entirely</strong> \u2014 earnings and share count are unchanged, so EPS does not move. Compare with a buyback of the same $20M, which would be accretive. <strong style="color:var(--yellow)">This is why EPS maximizers always prefer repurchases over dividends.</strong>';
   }
 
   const newEps = demoState.earnings / demoState.shares;
@@ -1256,7 +1314,7 @@ function demoAction(action) {
 
   // Flash animation
   epsEl.className = 'demo-value';
-  void epsEl.offsetWidth; // force reflow
+  void epsEl.offsetWidth;
   if (change > 0.001) {
     verdictEl.textContent = 'ACCRETIVE';
     verdictEl.className = 'demo-verdict accretive';
@@ -1270,7 +1328,7 @@ function demoAction(action) {
     verdictEl.className = 'demo-verdict';
   }
 
-  // Bar: map EPS $2-$6 to 0-100%
+  // Bar: map EPS around $4.00 baseline ($2-$6 => 0-100%)
   const barPct = Math.min(Math.max((newEps - 2) / 4 * 100, 2), 98);
   barEl.style.width = barPct + '%';
   barEl.style.background = change > 0.001 ? 'var(--accent2)' : change < -0.001 ? 'var(--red)' : 'var(--muted)';
