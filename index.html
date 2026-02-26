@@ -146,6 +146,17 @@
   .paper-card a { color:var(--accent); text-decoration:none; font-size:0.85rem; display:inline-block; margin-top:0.75rem; }
   .paper-card a:hover { text-decoration:underline; }
 
+  /* About section */
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
+  @media(max-width:700px) { .about-grid { grid-template-columns:1fr; } }
+  .about-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2rem; display:flex; flex-direction:column; }
+  .about-card .name { font-size:1.3rem; font-weight:700; margin-bottom:0.25rem; }
+  .about-card .affil { font-size:0.9rem; color:var(--accent); margin-bottom:1rem; }
+  .about-card .bio { font-size:0.88rem; color:var(--muted); line-height:1.7; flex:1; }
+  .about-card .links-row { margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap; }
+  .about-card .links-row a { color:var(--accent); text-decoration:none; font-size:0.85rem; }
+  .about-card .links-row a:hover { text-decoration:underline; }
+
   /* Footer */
   footer { border-top:1px solid var(--border); padding:3rem 2rem; text-align:center; color:var(--muted); font-size:0.8rem; }
   footer a { color:var(--accent); text-decoration:none; }
@@ -164,6 +175,23 @@
 
   /* Divider */
   .divider { width:60px; height:3px; background:linear-gradient(to right, var(--accent), var(--accent2)); border-radius:2px; margin:1rem 0 2rem; }
+
+  /* Three Problems Figure */
+  .three-problems { display:flex; flex-direction:column; gap:1.25rem; margin:2rem 0; }
+  .problem-box { border:2px dashed var(--border); border-radius:12px; padding:1.5rem 2rem; position:relative; cursor:pointer; transition:border-color 0.3s, background 0.3s; }
+  .problem-box:hover, .problem-box.active { border-color:var(--accent); background:rgba(50,136,189,0.04); }
+  .problem-box .problem-label { position:absolute; top:-0.75rem; right:1.5rem; background:var(--bg); padding:0 0.75rem; font-weight:700; font-size:0.85rem; letter-spacing:0.05em; }
+  .problem-box .problem-desc { font-size:0.88rem; color:var(--muted); margin-bottom:1.25rem; line-height:1.6; }
+  .problem-box .problem-cite { text-align:right; font-size:0.8rem; color:var(--muted); font-style:italic; margin-top:0.75rem; }
+  .eps-eq { display:flex; align-items:center; justify-content:center; gap:0.5rem; font-family:'Georgia',serif; font-size:clamp(1rem,2.5vw,1.4rem); flex-wrap:wrap; }
+  .eps-eq .frac { display:inline-flex; flex-direction:column; align-items:center; }
+  .eps-eq .frac .num { border-bottom:2px solid var(--muted); padding:0 0.75rem 3px; display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center; }
+  .eps-eq .frac .den { padding-top:3px; }
+  .eps-eq .part { padding:2px 6px; border-radius:4px; transition:background 0.3s, color 0.3s, box-shadow 0.3s; }
+  .eps-eq .part.hl-fixed { background:rgba(136,136,170,0.15); }
+  .eps-eq .part.hl-choice { background:rgba(50,136,189,0.25); box-shadow:0 0 0 2px var(--accent); color:var(--text); }
+  .eps-eq .part.hl-question { background:rgba(254,196,79,0.2); box-shadow:0 0 0 2px var(--yellow); color:var(--yellow); }
+  .eps-eq .annotation { font-size:0.7rem; color:var(--muted); display:block; text-align:center; margin-top:2px; font-family:system-ui,sans-serif; }
 </style>
 </head>
 <body>
@@ -187,6 +215,7 @@
       <a href="#investment">Investment</a>
       <a href="#payout">Payout</a>
       <a href="#papers">Papers</a>
+      <a href="#about">About</a>
     </div>
   </div>
 </nav>
@@ -194,7 +223,7 @@
 <!-- ===== HERO ===== -->
 <div class="hero">
   <h1>The <span class="highlight">Max EPS</span> Paradigm</h1>
-  <p class="subtitle">A new foundation for corporate finance research</p>
+  <p class="subtitle">How the financial system actually works</p>
   <p class="authors">Itzhak Ben-David (Ohio State &amp; NBER) &amp; Alex Chinco (Michigan State)</p>
 
   <div class="vs">
@@ -212,12 +241,87 @@
   </div>
 
   <div class="eq-box">
-    <div class="eq">E[EPS] = E[NOI] &minus; i &middot; Debt + r<sub>f</sub> &middot; Cash &nbsp;/&nbsp; #Shares</div>
+    <div class="eq">
+      <span style="font-size:0.7em;vertical-align:middle">E[EPS]</span>
+      &nbsp;=&nbsp;
+      <span style="display:inline-block;text-align:center;vertical-align:middle">
+        <span style="display:block;border-bottom:2px solid var(--muted);padding:0 0.5rem 4px">E[NOI] &minus; <em>i</em> &middot; Debt &plus; r<sub style="font-size:0.7em">f</sub> &middot; Cash</span>
+        <span style="display:block;padding-top:4px;font-size:0.75em;color:var(--muted)">#Shares</span>
+      </span>
+    </div>
     <div class="eq-label">The quantity every CEO fixates on</div>
   </div>
 
   <div class="scroll-cue">Scroll to explore<span>&darr;</span></div>
 </div>
+
+
+<!-- ===== THREE PROBLEMS FIGURE ===== -->
+<section class="fade-in">
+  <div class="section-label">Figure 1 &mdash; The Paradigm Paper</div>
+  <h2>One Equation, Three Classic Problems</h2>
+  <p>Every CEO starts from the same EPS equation. What changes is which parts she takes as given and which parts she tries to optimize. <strong>Click each box</strong> to see the different levers.</p>
+  <div class="divider"></div>
+
+  <div class="three-problems">
+    <div class="problem-box active" onclick="highlightProblem('cap')">
+      <div class="problem-label" style="color:var(--accent)">Capital Structure</div>
+      <div class="problem-desc">The CEO's asset base is set in stone. She looks to finance these assets using the capital source (equity, debt, cash) that sacrifices the least expected earnings next year.</div>
+      <div class="eps-eq">
+        <span style="font-size:0.85em;color:var(--muted)">E[EPS]</span>&nbsp;=&nbsp;
+        <span class="frac">
+          <span class="num">
+            <span class="part" id="cap-noi">E[NOI]</span>
+            <span>&minus;</span>
+            <span class="part" id="cap-debt"><em>i</em> &middot; Debt</span>
+            <span>+</span>
+            <span class="part" id="cap-cash">r<sub>f</sub> &middot; Cash</span>
+          </span>
+          <span class="den"><span class="part" id="cap-shares">#Shares</span></span>
+        </span>
+      </div>
+      <div class="problem-cite">Ben-David &amp; Chinco, "EPS-Maximizing Capital Structure"</div>
+    </div>
+
+    <div class="problem-box" onclick="highlightProblem('inv')">
+      <div class="problem-label" style="color:var(--orange)">Real Investment</div>
+      <div class="problem-desc">The CEO has already optimized her capital structure. Then one additional project becomes available. If she greenlights it, the financing expense cuts into earnings&mdash;but investing is accretive if the project generates even more income.</div>
+      <div class="eps-eq">
+        <span style="font-size:0.85em;color:var(--muted)">E[EPS]</span>&nbsp;=&nbsp;
+        <span class="frac">
+          <span class="num">
+            <span class="part" id="inv-noi">E[NOI]</span>
+            <span>&minus;</span>
+            <span class="part" id="inv-debt"><em>i</em> &middot; Debt</span>
+            <span>+</span>
+            <span class="part" id="inv-cash">r<sub>f</sub> &middot; Cash</span>
+          </span>
+          <span class="den"><span class="part" id="inv-shares">#Shares</span></span>
+        </span>
+      </div>
+      <div class="problem-cite">Ben-David &amp; Chinco, "Capital Budgeting for EPS Maximizers"</div>
+    </div>
+
+    <div class="problem-box" onclick="highlightProblem('pay')">
+      <div class="problem-label" style="color:var(--yellow)">Payout Policy</div>
+      <div class="problem-desc">The CEO has optimized capital structure but hasn't funded projects yet. She receives an unexpected cash windfall. Can she generate enough extra income by investing it to justify not using the money to buy back shares?</div>
+      <div class="eps-eq">
+        <span style="font-size:0.85em;color:var(--muted)">E[EPS]</span>&nbsp;=&nbsp;
+        <span class="frac">
+          <span class="num">
+            <span class="part" id="pay2-noi">E[NOI]</span>
+            <span>&minus;</span>
+            <span class="part" id="pay2-debt"><em>i</em> &middot; Debt</span>
+            <span>+</span>
+            <span class="part" id="pay2-cash">r<sub>f</sub> &middot; Cash</span>
+          </span>
+          <span class="den"><span class="part" id="pay2-shares">#Shares</span></span>
+        </span>
+      </div>
+      <div class="problem-cite">Ben-David &amp; Chinco, "EPS-Maximizing Payout Policy"</div>
+    </div>
+  </div>
+</section>
 
 
 <!-- ===== FRAMEWORK OVERVIEW ===== -->
@@ -712,6 +816,39 @@
 </section>
 
 
+<!-- ===== ABOUT ===== -->
+<section id="about" class="fade-in">
+  <div class="section-label">The Authors</div>
+  <h2>About Us</h2>
+  <div class="divider"></div>
+
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="name">Itzhak Ben-David</div>
+      <div class="affil">The Ohio State University &amp; NBER</div>
+      <div class="bio">
+        Itzhak Ben-David is the Neil Klatskin Chair in Finance and Real Estate at the Fisher College of Business, The Ohio State University, and a Research Associate at the National Bureau of Economic Research (NBER). His research spans corporate finance, behavioral finance, and financial institutions. His work has been published in leading journals including the <em>Journal of Financial Economics</em>, <em>Review of Financial Studies</em>, <em>Journal of Finance</em>, and the <em>Quarterly Journal of Economics</em>. He serves as an editor of the <em>Review of Financial Studies</em>.
+      </div>
+      <div class="links-row">
+        <a href="https://www.ibd-osu.com" target="_blank">Website</a>
+        <a href="mailto:ben-david.1@osu.edu">Email</a>
+      </div>
+    </div>
+    <div class="about-card">
+      <div class="name">Alex Chinco</div>
+      <div class="affil">Michigan State University</div>
+      <div class="bio">
+        Alex Chinco is an Associate Professor of Finance at the Broad College of Business, Michigan State University. His research focuses on asset pricing, information economics, and the intersection of theory and empirics in financial markets. His work has been published in the <em>Journal of Finance</em>, <em>Journal of Financial Economics</em>, and the <em>Review of Financial Studies</em>. He is known for developing creative empirical approaches and clear economic writing.
+      </div>
+      <div class="links-row">
+        <a href="https://www.alexchinco.com" target="_blank">Website</a>
+        <a href="mailto:alexchinco@gmail.com">Email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <footer>
   <p>&copy; 2026 Itzhak Ben-David &amp; Alex Chinco &nbsp;|&nbsp;
     <a href="mailto:ben-david.1@osu.edu">ben-david.1@osu.edu</a> &nbsp;|&nbsp;
@@ -903,6 +1040,37 @@ function updatePayout() {
 }
 ['pay-cash','pay-pe','pay-rf','pay-proj','pay-iy'].forEach(id => document.getElementById(id).addEventListener('input', updatePayout));
 updatePayout();
+
+// ===== Three Problems Figure =====
+function highlightProblem(type) {
+  // Reset all boxes
+  document.querySelectorAll('.problem-box').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.eps-eq .part').forEach(p => { p.className = 'part'; });
+  // Activate clicked box
+  const boxes = {cap:0, inv:1, pay:2};
+  document.querySelectorAll('.problem-box')[boxes[type]].classList.add('active');
+
+  if (type === 'cap') {
+    // Fixed: NOI. Choice: debt, cash, shares
+    document.getElementById('cap-noi').classList.add('hl-fixed');
+    document.getElementById('cap-debt').classList.add('hl-choice');
+    document.getElementById('cap-cash').classList.add('hl-choice');
+    document.getElementById('cap-shares').classList.add('hl-choice');
+  } else if (type === 'inv') {
+    // Question: does project increase NOI enough to offset cheapest financing?
+    document.getElementById('inv-noi').classList.add('hl-question');
+    document.getElementById('inv-debt').classList.add('hl-choice');
+    document.getElementById('inv-cash').classList.add('hl-choice');
+    document.getElementById('inv-shares').classList.add('hl-choice');
+  } else if (type === 'pay') {
+    // Question: can windfall increase NOI+Cash enough to justify not reducing shares?
+    document.getElementById('pay2-noi').classList.add('hl-question');
+    document.getElementById('pay2-cash').classList.add('hl-question');
+    document.getElementById('pay2-shares').classList.add('hl-choice');
+  }
+}
+// Initialize
+highlightProblem('cap');
 
 // ===== Password gate =====
 function checkPw() {
