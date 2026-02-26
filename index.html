@@ -273,7 +273,7 @@
       <span style="margin:0 0.4rem;vertical-align:middle">=</span>
       <span style="display:inline-block;text-align:center;vertical-align:middle">
         <span style="display:block;border-bottom:2px solid var(--muted);padding:0 0.6rem 5px">E[NOI] &plus; r<sub style="font-size:0.7em">f</sub> &middot; Cash &minus; <em>i</em> &middot; Debt</span>
-        <span style="display:block;padding-top:5px;font-size:0.7em;color:var(--muted)"># Shares</span>
+        <span style="display:block;padding-top:5px;font-size:0.7em"># Shares</span>
       </span>
     </div>
     <div class="eq-label">Every corporate decision filters through this equation</div>
@@ -281,44 +281,6 @@
 
   <div class="scroll-cue">Scroll to explore<span>&darr;</span></div>
 </div>
-
-
-<!-- ===== ACCRETION / DILUTION DEMO ===== -->
-<section class="fade-in" style="padding-top:1.5rem">
-  <div class="demo-card">
-    <h3 style="text-align:center;margin-bottom:0.25rem;font-size:1.2rem">Accretion & Dilution</h3>
-    <p style="text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:0.25rem">Any action that raises EPS is <strong style="color:var(--accent2)">accretive</strong>. Any action that lowers it is <strong style="color:var(--red)">dilutive</strong>.</p>
-    <p style="text-align:center;color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem">This firm earns $400M and has 100M shares trading at $40 (P/E&nbsp;=&nbsp;10, earnings&nbsp;yield&nbsp;=&nbsp;10%). Try each action:</p>
-
-    <div class="demo-equation">
-      <div class="demo-block">
-        <div class="demo-value" id="d-earn">$400M</div>
-        <div class="demo-label">Earnings</div>
-      </div>
-      <div class="demo-op">&divide;</div>
-      <div class="demo-block">
-        <div class="demo-value" id="d-shares">100M</div>
-        <div class="demo-label">Shares</div>
-      </div>
-      <div class="demo-op">=</div>
-      <div class="demo-block demo-result-block">
-        <div class="demo-value" id="d-eps">$4.00</div>
-        <div class="demo-label">EPS</div>
-        <div class="demo-bar-wrap"><div class="demo-bar" id="d-bar" style="width:50%;background:var(--muted)"></div></div>
-      </div>
-      <div class="demo-verdict" id="d-verdict"></div>
-    </div>
-
-    <div class="demo-buttons">
-      <button class="demo-btn" onclick="demoAction('buyback')" style="border-color:var(--accent2);color:var(--accent2)">&#8593; Buy back 1M shares</button>
-      <button class="demo-btn" onclick="demoAction('issue')" style="border-color:var(--red);color:var(--red)">&#8595; Issue 1M new shares</button>
-      <button class="demo-btn" onclick="demoAction('lever')" style="border-color:var(--accent);color:var(--accent)">&#9878; Borrow $40M at 4%, repurchase</button>
-      <button class="demo-btn" onclick="demoAction('reset')" style="border-color:var(--muted);color:var(--muted)">Reset</button>
-    </div>
-
-    <div class="demo-explanation" id="d-explain" style="display:none"></div>
-  </div>
-</section>
 
 
 <!-- ===== THREE PROBLEMS FIGURE ===== -->
@@ -385,6 +347,44 @@
       </div>
       <div class="problem-cite">Ben-David &amp; Chinco, "EPS-Maximizing Payout Policy"</div>
     </div>
+  </div>
+</section>
+
+
+<!-- ===== ACCRETION / DILUTION DEMO ===== -->
+<section class="fade-in" style="padding-top:1.5rem">
+  <div class="demo-card">
+    <h3 style="text-align:center;margin-bottom:0.25rem;font-size:1.2rem">Accretion & Dilution</h3>
+    <p style="text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:0.25rem">Any action that raises EPS is <strong style="color:var(--accent2)">accretive</strong>. Any action that lowers it is <strong style="color:var(--red)">dilutive</strong>.</p>
+    <p style="text-align:center;color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem">This firm earns $400M and has 100M shares trading at $40 (P/E&nbsp;=&nbsp;10, earnings&nbsp;yield&nbsp;=&nbsp;10%). Try each action:</p>
+
+    <div class="demo-equation">
+      <div class="demo-block">
+        <div class="demo-value" id="d-earn">$400M</div>
+        <div class="demo-label">Earnings</div>
+      </div>
+      <div class="demo-op">&divide;</div>
+      <div class="demo-block">
+        <div class="demo-value" id="d-shares">100M</div>
+        <div class="demo-label">Shares</div>
+      </div>
+      <div class="demo-op">=</div>
+      <div class="demo-block demo-result-block">
+        <div class="demo-value" id="d-eps">$4.00</div>
+        <div class="demo-label">EPS</div>
+        <div class="demo-bar-wrap"><div class="demo-bar" id="d-bar" style="width:50%;background:var(--muted)"></div></div>
+      </div>
+      <div class="demo-verdict" id="d-verdict"></div>
+    </div>
+
+    <div class="demo-buttons">
+      <button class="demo-btn" onclick="demoAction('buyback')" style="border-color:var(--accent2);color:var(--accent2)">&#8593; Buy back 1M shares</button>
+      <button class="demo-btn" onclick="demoAction('issue')" style="border-color:var(--red);color:var(--red)">&#8595; Issue 1M new shares</button>
+      <button class="demo-btn" onclick="demoAction('lever')" style="border-color:var(--accent);color:var(--accent)">&#9878; Borrow $40M at 4%, repurchase</button>
+      <button class="demo-btn" onclick="demoAction('reset')" style="border-color:var(--muted);color:var(--muted)">Reset</button>
+    </div>
+
+    <div class="demo-explanation" id="d-explain" style="display:none"></div>
   </div>
 </section>
 
