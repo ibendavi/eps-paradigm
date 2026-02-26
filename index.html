@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<title>The Max EPS Paradigm | Ben-David &amp; Chinco</title>
+<title>📈 The Max EPS Paradigm | Ben-David &amp; Chinco</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
 <style>
   :root {
     --bg: #0a0a0f;
@@ -103,6 +104,29 @@
   .calc-result-row .metric { flex:1; min-width:150px; }
   .growth { color:var(--accent2); }
   .value { color:var(--red); }
+
+  /* Yield Machine */
+  .ym-container { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2rem; }
+  .ym-inputs { margin-bottom:2rem; }
+  .ym-yield-row { display:grid; grid-template-columns:90px 1fr 180px 65px; align-items:center; gap:0.75rem; margin-bottom:0.75rem; }
+  @media(max-width:700px) { .ym-yield-row { grid-template-columns:70px 1fr 60px; } .ym-yield-row .ym-bar-wrap { display:none; } }
+  .ym-yield-label { font-size:1rem; font-weight:700; font-family:'JetBrains Mono','Courier New',monospace; line-height:1.2; }
+  .ym-yield-sub { display:block; font-size:0.65rem; color:var(--muted); font-weight:400; font-family:'Source Serif 4',Georgia,serif; letter-spacing:0; }
+  .ym-yield-val { font-family:'JetBrains Mono','Courier New',monospace; font-weight:700; font-size:0.95rem; text-align:right; }
+  .ym-bar-wrap { height:8px; background:var(--bg3); border-radius:4px; overflow:hidden; }
+  .ym-bar { height:100%; border-radius:4px; transition:width 0.3s; }
+  .ym-ordering { text-align:center; margin-top:1rem; font-size:1.1rem; font-family:'JetBrains Mono','Courier New',monospace; color:var(--text); padding:0.5rem; background:var(--bg3); border-radius:8px; letter-spacing:0.05em; }
+  .ym-table-wrap { overflow-x:auto; }
+  .ym-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+  .ym-table th { padding:0.6rem 0.75rem; text-align:left; border-bottom:2px solid var(--border); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-family:'Source Serif 4',Georgia,serif; }
+  .ym-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--border); vertical-align:top; }
+  .ym-table tr:hover td { background:var(--bg3); }
+  .ym-table .ym-pred { font-weight:700; font-family:'JetBrains Mono','Courier New',monospace; font-size:0.85rem; }
+  .ym-table .ym-logic { font-size:0.8rem; color:var(--muted); font-family:'JetBrains Mono','Courier New',monospace; }
+  .ym-npv-col { color:var(--red); opacity:0.7; }
+  .ym-table .ym-npv { font-size:0.78rem; color:var(--muted); font-style:italic; }
+  .ym-punchline { text-align:center; margin-top:1.5rem; padding:1rem; background:var(--bg3); border-radius:8px; font-size:0.9rem; color:var(--muted); line-height:1.7; }
+  .ym-punchline strong { color:var(--text); }
 
   /* Value/Growth visual */
   .vg-spectrum { height:60px; border-radius:12px; margin:1.5rem 0; position:relative; background:linear-gradient(to right, var(--accent2) 0%, var(--accent2) 45%, #666 50%, var(--red) 55%, var(--red) 100%); overflow:hidden; }
@@ -540,90 +564,54 @@
 </section>
 
 
-<!-- ===== INTERACTIVE CALCULATOR ===== -->
+<!-- ===== THE YIELD MACHINE ===== -->
 <section id="calculator" class="fade-in">
-  <div class="section-label">Interactive</div>
-  <h2>The EPS Maximizer's Dashboard</h2>
-  <p>Drag the sliders to see how a firm's earnings yield and the risk-free rate determine its optimal strategy. The bright line between value and growth depends on <strong>EY vs. r<sub>f</sub></strong>.</p>
+  <div class="section-label">The Core Mechanism</div>
+  <h2>The Yield Machine</h2>
+  <p>Three observable yields. One objective. Every major corporate policy follows from their relative ordering&mdash;without invoking a single market friction.</p>
   <div class="divider"></div>
 
-  <div class="calc-container">
-    <h3>Firm Parameters</h3>
-    <div class="calc-row">
-      <label>P/E Ratio:</label>
-      <input type="range" id="pe" min="5" max="80" value="20" step="1">
-      <span class="val" id="pe-val">20&times;</span>
-    </div>
-    <div class="calc-row">
-      <label>Risk-free Rate (r<sub>f</sub>):</label>
-      <input type="range" id="rf" min="0" max="10" value="4" step="0.25">
-      <span class="val" id="rf-val">4.00%</span>
-    </div>
-    <div class="calc-row">
-      <label>Marginal Interest Rate (i):</label>
-      <input type="range" id="mi" min="0" max="15" value="5" step="0.25">
-      <span class="val" id="mi-val">5.00%</span>
-    </div>
-    <div class="calc-row">
-      <label>Project Income Yield (IY):</label>
-      <input type="range" id="iy" min="0" max="15" value="6" step="0.25">
-      <span class="val" id="iy-val">6.00%</span>
-    </div>
-
-    <!-- Spectrum -->
-    <div style="margin:2rem 0 2.5rem;position:relative">
-      <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem">
-        <span>Growth (EY &lt; r<sub>f</sub>)</span><span>Value (EY &gt; r<sub>f</sub>)</span>
+  <div class="ym-container">
+    <!-- Yield bars -->
+    <div class="ym-inputs">
+      <div class="ym-yield-row">
+        <label class="ym-yield-label">EY<span class="ym-yield-sub">Earnings yield = 1/PE</span></label>
+        <input type="range" id="ym-ey" min="1" max="15" value="8" step="0.25">
+        <div class="ym-bar-wrap"><div class="ym-bar" id="ym-ey-bar" style="width:53%;background:var(--red)"></div></div>
+        <span class="ym-yield-val" id="ym-ey-val">8.00%</span>
       </div>
-      <div class="vg-spectrum">
-        <div class="marker" id="vg-marker" style="left:50%"></div>
-        <div class="labels"><span style="color:#fff">GROWTH</span><span style="color:#fff">VALUE</span></div>
-        <div class="midline"></div>
-        <div class="midlabel">EY = r<sub>f</sub></div>
+      <div class="ym-yield-row">
+        <label class="ym-yield-label"><em>i</em><span class="ym-yield-sub">Marginal borrowing rate</span></label>
+        <input type="range" id="ym-i" min="0" max="15" value="5" step="0.25">
+        <div class="ym-bar-wrap"><div class="ym-bar" id="ym-i-bar" style="width:33%;background:var(--accent)"></div></div>
+        <span class="ym-yield-val" id="ym-i-val">5.00%</span>
       </div>
+      <div class="ym-yield-row">
+        <label class="ym-yield-label">r<sub>f</sub><span class="ym-yield-sub">Risk-free rate</span></label>
+        <input type="range" id="ym-rf" min="0" max="10" value="3" step="0.25">
+        <div class="ym-bar-wrap"><div class="ym-bar" id="ym-rf-bar" style="width:30%;background:var(--accent2)"></div></div>
+        <span class="ym-yield-val" id="ym-rf-val">3.00%</span>
+      </div>
+      <div class="ym-ordering" id="ym-ordering">EY &gt; <em>i</em> &gt; r<sub>f</sub></div>
     </div>
 
-    <div class="calc-result">
-      <div class="calc-result-row">
-        <div class="metric">
-          <div class="big" id="ey-display">5.00%</div>
-          <div class="label">Earnings Yield (EY = 1/PE)</div>
-        </div>
-        <div class="metric">
-          <div class="big" id="excess-ey-display" style="color:var(--red)">+1.00%</div>
-          <div class="label">Excess EY (EY &minus; r<sub>f</sub>)</div>
-        </div>
-        <div class="metric">
-          <div class="big" id="classification" style="color:var(--red)">VALUE STOCK</div>
-          <div class="label">Classification</div>
-        </div>
-      </div>
+    <!-- Predictions table -->
+    <div class="ym-table-wrap">
+      <table class="ym-table">
+        <thead>
+          <tr>
+            <th>Corporate Decision</th>
+            <th>EPS Prediction</th>
+            <th>Yield Comparison</th>
+            <th class="ym-npv-col">NPV Paradigm Needs&hellip;</th>
+          </tr>
+        </thead>
+        <tbody id="ym-tbody">
+        </tbody>
+      </table>
     </div>
 
-    <!-- Tabs for different policy implications -->
-    <div style="margin-top:2rem">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('tab-cap')">Capital Structure</button>
-        <button class="tab-btn" onclick="showTab('tab-inv')">Investment</button>
-        <button class="tab-btn" onclick="showTab('tab-pay')">Payout</button>
-      </div>
-
-      <div class="tab-content active" id="tab-cap">
-        <div class="calc-result" style="text-align:left">
-          <div id="cap-advice"></div>
-        </div>
-      </div>
-      <div class="tab-content" id="tab-inv">
-        <div class="calc-result" style="text-align:left">
-          <div id="inv-advice"></div>
-        </div>
-      </div>
-      <div class="tab-content" id="tab-pay">
-        <div class="calc-result" style="text-align:left">
-          <div id="pay-advice"></div>
-        </div>
-      </div>
-    </div>
+    <div class="ym-punchline" id="ym-punchline"></div>
   </div>
 </section>
 
@@ -1034,82 +1022,117 @@ function showTab(id) {
   event.target.classList.add('active');
 }
 
-// ===== Main Dashboard Calculator =====
-function updateDashboard() {
-  const pe = +document.getElementById('pe').value;
-  const rf = +document.getElementById('rf').value;
-  const mi = +document.getElementById('mi').value;
-  const iy = +document.getElementById('iy').value;
-  const ey = (1/pe)*100;
-  const excessEY = ey - rf;
+// ===== The Yield Machine =====
+function updateYM() {
+  const ey = +document.getElementById('ym-ey').value;
+  const i  = +document.getElementById('ym-i').value;
+  const rf = +document.getElementById('ym-rf').value;
 
-  document.getElementById('pe-val').textContent = pe + '\u00d7';
-  document.getElementById('rf-val').textContent = rf.toFixed(2) + '%';
-  document.getElementById('mi-val').textContent = mi.toFixed(2) + '%';
-  document.getElementById('iy-val').textContent = iy.toFixed(2) + '%';
+  // Update display values
+  document.getElementById('ym-ey-val').textContent = ey.toFixed(2) + '%';
+  document.getElementById('ym-i-val').textContent = i.toFixed(2) + '%';
+  document.getElementById('ym-rf-val').textContent = rf.toFixed(2) + '%';
 
-  document.getElementById('ey-display').textContent = ey.toFixed(2) + '%';
-  const exEl = document.getElementById('excess-ey-display');
-  exEl.textContent = (excessEY >= 0 ? '+' : '') + excessEY.toFixed(2) + '%';
-  exEl.style.color = excessEY >= 0 ? 'var(--red)' : 'var(--accent2)';
+  // Update bars (scale: 15% = 100%)
+  document.getElementById('ym-ey-bar').style.width = (ey/15*100) + '%';
+  document.getElementById('ym-i-bar').style.width = (i/15*100) + '%';
+  document.getElementById('ym-rf-bar').style.width = (rf/15*100) + '%';
 
-  const classEl = document.getElementById('classification');
-  if (excessEY > 0) {
-    classEl.textContent = 'VALUE STOCK';
-    classEl.style.color = 'var(--red)';
-  } else {
-    classEl.textContent = 'GROWTH STOCK';
-    classEl.style.color = 'var(--accent2)';
-  }
+  // Yield ordering display
+  const yields = [{name:'EY',v:ey},{name:'<em>i</em>',v:i},{name:'r<sub>f</sub>',v:rf}];
+  yields.sort((a,b) => b.v - a.v);
+  const orderStr = yields.map(y=>y.name).join(' &gt; ');
+  document.getElementById('ym-ordering').innerHTML = yields[0].v === yields[1].v || yields[1].v === yields[2].v
+    ? yields.map(y=>y.name + '=' + y.v.toFixed(1) + '%').join(' , ')
+    : orderStr;
 
-  // Marker on spectrum (EY range 0-15, map to 0-100%)
-  const pct = Math.min(Math.max((ey / 15) * 100, 2), 98);
-  document.getElementById('vg-marker').style.left = pct + '%';
+  // Classification
+  const isValue = ey > rf;
+  const cls = isValue ? 'VALUE' : 'GROWTH';
+  const clsColor = isValue ? 'var(--red)' : 'var(--accent2)';
 
-  // Capital structure advice
-  const capDiv = document.getElementById('cap-advice');
-  const hurdle = Math.min(ey, mi, rf);
-  if (excessEY > 0) {
-    capDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">Value Stock Strategy</div>
-      <p style="color:var(--muted);font-size:0.9rem">Equity is expensive at <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> vs. riskfree borrowing at <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Each $1 shifted from equity to riskfree debt frees up <strong style="color:var(--text)">${(ey-rf).toFixed(2)}&#162;</strong> of expected earnings.</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem"><strong style="color:var(--text)">Prescription:</strong> Max out riskfree borrowing. Continue borrowing at <strong style="color:var(--text)">i = ${mi.toFixed(1)}%</strong> as long as i &lt; EY. ${mi < ey ? 'Currently, debt is still cheaper\u2014keep levering up.' : 'Currently, marginal debt is too expensive\u2014at optimal leverage.'}</p>`;
-  } else {
-    capDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">Growth Stock Strategy</div>
-      <p style="color:var(--muted);font-size:0.9rem">Equity is cheap at <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> vs. riskfree borrowing at <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Even riskfree debt costs more than equity financing.</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem"><strong style="color:var(--text)">Prescription:</strong> Zero financial leverage. Fund everything with equity. Accumulate cash aggressively\u2014lending at r<sub>f</sub> = ${rf.toFixed(1)}% is profitable when you borrow at EY = ${ey.toFixed(1)}%.</p>`;
-  }
+  // Cheapest capital
+  const minCost = Math.min(ey, i, rf);
+  const cheapest = minCost === rf ? 'r<sub>f</sub>' : minCost === i ? '<em>i</em>' : 'EY';
 
-  // Investment advice
-  const invDiv = document.getElementById('inv-advice');
-  const cheapest = hurdle;
-  const cheapLabel = cheapest === rf ? 'cash (r_f)' : cheapest === mi ? 'debt (i)' : 'equity (EY)';
-  if (iy > cheapest) {
-    invDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">ACCRETIVE \u2014 Invest!</div>
-      <p style="color:var(--muted);font-size:0.9rem">Income yield <strong style="color:var(--text)">${iy.toFixed(1)}%</strong> > financing yield <strong style="color:var(--text)">${cheapest.toFixed(1)}%</strong> (${cheapLabel}). The project adds <strong style="color:var(--accent2)">+${(iy-cheapest).toFixed(2)}&#162;</strong> per $1 invested to next year's earnings.</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem">Finance with ${cheapLabel}. Payback period: <strong style="color:var(--text)">${(1/(iy/100)).toFixed(1)} years</strong>.</p>`;
-  } else {
-    invDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">DILUTIVE \u2014 Don't invest</div>
-      <p style="color:var(--muted);font-size:0.9rem">Income yield <strong style="color:var(--text)">${iy.toFixed(1)}%</strong> < financing yield <strong style="color:var(--text)">${cheapest.toFixed(1)}%</strong> (${cheapLabel}). The project would drag earnings by <strong style="color:var(--red)">${(iy-cheapest).toFixed(2)}&#162;</strong> per $1 invested.</p>`;
-  }
-
-  // Payout advice
-  const payDiv = document.getElementById('pay-advice');
-  if (excessEY <= 0) {
-    payDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETAIN \u2014 Growth stocks never return cash</div>
-      <p style="color:var(--muted);font-size:0.9rem">Cash yield from Treasuries: <strong style="color:var(--text)">${rf.toFixed(1)}%</strong> > Earnings yield: <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>. Even parking cash in T-bills beats the cost of equity. Retain everything.</p>`;
-  } else {
-    const cySimple = rf; // simplified: assume pure Treasury
-    if (cySimple > ey) {
-      payDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETAIN \u2014 Cash yield exceeds earnings yield</div>
-        <p style="color:var(--muted);font-size:0.9rem">If projects offer high enough yields, retaining is accretive. But value stocks face a high hurdle: EY = <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>.</p>`;
-    } else {
-      payDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETURN \u2014 Buybacks are more accretive</div>
-        <p style="color:var(--muted);font-size:0.9rem">Earnings yield <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> > Treasury yield <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Without enough high-yield projects, the CEO should buy back shares. ${excessEY < 2 ? '<strong style="color:var(--yellow)">Marginal value stock \u2014 dividend pressure is strongest here.</strong>' : 'Deep value stock \u2014 strong accretive pull toward repurchases.'}</p>`;
+  // Build prediction rows
+  const rows = [
+    {
+      decision: 'Value vs. Growth',
+      pred: cls,
+      predColor: clsColor,
+      logic: ey > rf ? 'EY &gt; r<sub>f</sub>' : ey < rf ? 'EY &lt; r<sub>f</sub>' : 'EY = r<sub>f</sub>',
+      npv: '\u2014'
+    },
+    {
+      decision: 'Financial leverage',
+      pred: ey > i ? 'High' : ey > rf ? 'Moderate' : 'Zero',
+      predColor: ey > i ? clsColor : ey > rf ? 'var(--yellow)' : clsColor,
+      logic: ey > i ? 'EY &gt; <em>i</em> \u2192 debt cheaper than equity'
+           : ey > rf ? 'r<sub>f</sub> &lt; EY &lt; <em>i</em> \u2192 riskfree only'
+           : 'EY &lt; r<sub>f</sub> \u2192 even riskfree debt too expensive',
+      npv: 'Tax shields (MM 1963), trade-off theory'
+    },
+    {
+      decision: 'Share repurchases',
+      pred: ey > i ? 'Active' : isValue ? 'Occasional' : 'Never',
+      predColor: ey > i ? clsColor : isValue ? 'var(--yellow)' : clsColor,
+      logic: ey > i ? 'EY &gt; <em>i</em> \u2192 retiring shares at EY, funding at <em>i</em>'
+           : isValue ? 'EY &gt; r<sub>f</sub> but EY &lt; <em>i</em> \u2192 limited room'
+           : 'EY &lt; r<sub>f</sub> \u2192 buybacks dilutive',
+      npv: 'Free cash flow agency (Jensen 1986)'
+    },
+    {
+      decision: 'Cash holdings',
+      pred: isValue ? 'Low' : 'High',
+      predColor: clsColor,
+      logic: isValue ? 'r<sub>f</sub> &lt; EY \u2192 lending at r<sub>f</sub> costs EY in equity' : 'r<sub>f</sub> &gt; EY \u2192 Treasuries earn more than equity costs',
+      npv: 'Precautionary savings (Keynes 1936)'
+    },
+    {
+      decision: 'Investment hurdle',
+      pred: minCost.toFixed(1) + '% (' + cheapest + ')',
+      predColor: 'var(--text)',
+      logic: 'min{EY, <em>i</em>, r<sub>f</sub>} = ' + cheapest,
+      npv: 'CAPM + risk adjustment (Sharpe 1964)'
+    },
+    {
+      decision: 'M&A payment',
+      pred: isValue ? 'Cash / Debt' : 'Stock',
+      predColor: clsColor,
+      logic: isValue ? 'EY high \u2192 equity expensive, pay with cheap debt' : 'EY low \u2192 equity cheap, issue stock',
+      npv: 'Information asymmetry (Myers\u2013Majluf 1984)'
+    },
+    {
+      decision: 'Payout preference',
+      pred: isValue ? 'Buybacks \u226B Dividends' : 'Neither',
+      predColor: clsColor,
+      logic: isValue ? 'Buybacks are accretive; dividends bypass the income statement' : 'No excess cash to distribute',
+      npv: 'Signaling (Bhattacharya 1979), clienteles'
+    },
+    {
+      decision: 'Equity issuance',
+      pred: isValue ? 'Avoid' : 'Frequent',
+      predColor: clsColor,
+      logic: isValue ? 'EY high \u2192 equity is expensive capital' : 'EY low \u2192 equity is the cheapest source',
+      npv: 'Pecking order (Myers 1984)'
     }
-  }
+  ];
+
+  const tbody = document.getElementById('ym-tbody');
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td><strong>${r.decision}</strong></td>
+    <td class="ym-pred" style="color:${r.predColor}">${r.pred}</td>
+    <td class="ym-logic">${r.logic}</td>
+    <td class="ym-npv">${r.npv}</td>
+  </tr>`).join('');
+
+  // Punchline
+  const n = rows.filter(r => r.npv !== '\u2014').length;
+  document.getElementById('ym-punchline').innerHTML = `<strong>${n} phenomena. ${n} separate theories in the NPV paradigm.</strong> In the EPS paradigm, all ${n} follow from comparing three yields. Drag the sliders above\u2014every prediction updates from the same mechanism. No frictions required.`;
 }
-['pe','rf','mi','iy'].forEach(id => document.getElementById(id).addEventListener('input', updateDashboard));
-updateDashboard();
+['ym-ey','ym-i','ym-rf'].forEach(id => document.getElementById(id).addEventListener('input', updateYM));
+updateYM();
 
 // ===== Analyst Pricing Calculator =====
 function updatePricing() {
