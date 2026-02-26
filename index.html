@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Max EPS Paradigm | Ben-David &amp; Chinco</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a2e;
+    --accent: #3288BD;
+    --accent2: #009E73;
+    --red: #D53E4F;
+    --orange: #F46D43;
+    --yellow: #FEC44F;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --border: #2a2a3e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; }
+
+  /* Navigation */
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,10,15,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+  nav .inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0.75rem 2rem; }
+  nav .logo { font-weight:700; font-size:1.1rem; color:var(--accent); letter-spacing:-0.02em; }
+  nav .links { display:flex; gap:1.5rem; }
+  nav .links a { color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s; }
+  nav .links a:hover { color:var(--text); }
+  @media(max-width:768px) { nav .links { display:none; } }
+
+  /* Hero */
+  .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6rem 2rem 4rem; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(ellipse at 60% 40%, rgba(50,136,189,0.08) 0%, transparent 60%), radial-gradient(ellipse at 30% 70%, rgba(0,158,115,0.05) 0%, transparent 50%); animation:drift 20s ease-in-out infinite alternate; }
+  @keyframes drift { from{transform:translate(0,0)} to{transform:translate(-3%,2%)} }
+  .hero h1 { font-size:clamp(2.5rem,6vw,4.5rem); font-weight:800; letter-spacing:-0.03em; line-height:1.1; margin-bottom:1rem; position:relative; }
+  .hero h1 .highlight { background:linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hero .subtitle { font-size:clamp(1rem,2vw,1.35rem); color:var(--muted); max-width:700px; margin-bottom:0.75rem; position:relative; }
+  .hero .authors { font-size:1rem; color:var(--accent); margin-bottom:2rem; position:relative; }
+  .hero .eq-box { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.5rem 2.5rem; margin:1.5rem auto; display:inline-block; position:relative; }
+  .hero .eq-box .eq { font-size:clamp(1.2rem,3vw,1.8rem); font-family:'Georgia',serif; font-style:italic; }
+  .hero .eq-box .eq-label { font-size:0.8rem; color:var(--muted); margin-top:0.5rem; }
+  .hero .vs { display:flex; align-items:center; gap:2rem; flex-wrap:wrap; justify-content:center; margin:1.5rem 0; position:relative; }
+  .hero .vs .paradigm { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:1.25rem 2rem; min-width:260px; }
+  .hero .vs .paradigm h3 { font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
+  .hero .vs .paradigm.old h3 { color:var(--red); }
+  .hero .vs .paradigm.new h3 { color:var(--accent2); }
+  .hero .vs .paradigm p { font-family:'Georgia',serif; font-size:1.1rem; }
+  .hero .vs-arrow { font-size:2rem; color:var(--muted); }
+  .scroll-cue { position:relative; margin-top:2.5rem; animation:bob 2s ease-in-out infinite; color:var(--muted); font-size:0.85rem; }
+  .scroll-cue span { display:block; font-size:1.5rem; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+  /* Section styling */
+  section { max-width:1100px; margin:0 auto; padding:5rem 2rem; }
+  .section-label { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--accent); margin-bottom:0.5rem; }
+  section h2 { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:700; letter-spacing:-0.02em; margin-bottom:1.5rem; line-height:1.2; }
+  section p { color:var(--muted); max-width:750px; margin-bottom:1rem; }
+  section p strong { color:var(--text); }
+
+  /* Framework overview cards */
+  .framework-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; margin-top:2rem; }
+  .fw-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2rem; transition:transform 0.3s, border-color 0.3s; }
+  .fw-card:hover { transform:translateY(-4px); border-color:var(--accent); }
+  .fw-card .icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:1rem; }
+  .fw-card h3 { font-size:1.15rem; margin-bottom:0.5rem; }
+  .fw-card p { font-size:0.9rem; color:var(--muted); margin:0; }
+  .fw-card .icon.blue { background:rgba(50,136,189,0.15); color:var(--accent); }
+  .fw-card .icon.green { background:rgba(0,158,115,0.15); color:var(--accent2); }
+  .fw-card .icon.red { background:rgba(213,62,79,0.15); color:var(--red); }
+  .fw-card .icon.orange { background:rgba(244,109,67,0.15); color:var(--orange); }
+  .fw-card .icon.yellow { background:rgba(254,196,79,0.15); color:var(--yellow); }
+
+  /* Interactive calculators */
+  .calc-container { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2rem; margin:2rem 0; }
+  .calc-container h3 { font-size:1.2rem; margin-bottom:1rem; }
+  .calc-row { display:flex; align-items:center; gap:1.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+  .calc-row label { font-size:0.9rem; color:var(--muted); min-width:140px; }
+  .calc-row input[type=range] { flex:1; min-width:200px; accent-color:var(--accent); height:6px; }
+  .calc-row .val { font-weight:700; min-width:60px; text-align:right; font-family:'Georgia',serif; }
+  .calc-result { background:var(--bg3); border-radius:12px; padding:1.5rem; margin-top:1.5rem; text-align:center; }
+  .calc-result .big { font-size:2rem; font-weight:800; margin-bottom:0.5rem; }
+  .calc-result .label { font-size:0.85rem; color:var(--muted); }
+  .calc-result-row { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+  .calc-result-row .metric { flex:1; min-width:150px; }
+  .growth { color:var(--accent2); }
+  .value { color:var(--red); }
+
+  /* Value/Growth visual */
+  .vg-spectrum { height:60px; border-radius:12px; margin:1.5rem 0; position:relative; background:linear-gradient(to right, var(--accent2) 0%, var(--accent2) 45%, #666 50%, var(--red) 55%, var(--red) 100%); overflow:hidden; }
+  .vg-spectrum .marker { position:absolute; top:-8px; bottom:-8px; width:4px; background:var(--yellow); border-radius:2px; transition:left 0.3s; z-index:2; }
+  .vg-spectrum .labels { position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; font-weight:700; font-size:0.85rem; }
+  .vg-spectrum .midline { position:absolute; left:50%; top:0; bottom:0; width:2px; background:var(--yellow); opacity:0.7; }
+  .vg-spectrum .midlabel { position:absolute; left:50%; bottom:-28px; transform:translateX(-50%); font-size:0.75rem; color:var(--yellow); white-space:nowrap; }
+
+  /* Paper sections */
+  .paper-section { padding:4rem 0; border-top:1px solid var(--border); }
+  .paper-header { display:flex; align-items:flex-start; gap:1.5rem; margin-bottom:2rem; flex-wrap:wrap; }
+  .paper-num { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; flex-shrink:0; }
+  .paper-header h3 { font-size:1.5rem; font-weight:700; }
+  .paper-header .paper-desc { font-size:0.95rem; color:var(--muted); }
+  .key-eq { background:var(--bg3); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:1rem 1.5rem; margin:1rem 0; font-family:'Georgia',serif; font-size:1.1rem; }
+  .prediction-list { list-style:none; margin:1.5rem 0; }
+  .prediction-list li { padding:0.75rem 1rem; margin-bottom:0.5rem; background:var(--bg3); border-radius:8px; font-size:0.9rem; display:flex; align-items:flex-start; gap:0.75rem; }
+  .prediction-list li::before { content:''; width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:0.5rem; }
+  .prediction-list.value-list li::before { background:var(--red); }
+  .prediction-list.growth-list li::before { background:var(--accent2); }
+  .prediction-list.mixed-list li::before { background:var(--accent); }
+
+  /* Comparison table */
+  .compare-table { width:100%; border-collapse:collapse; margin:2rem 0; font-size:0.9rem; }
+  .compare-table th { padding:0.75rem 1rem; text-align:left; border-bottom:2px solid var(--border); color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; }
+  .compare-table td { padding:0.75rem 1rem; border-bottom:1px solid var(--border); }
+  .compare-table tr:hover td { background:var(--bg3); }
+  .compare-table .col-npv { color:var(--red); }
+  .compare-table .col-eps { color:var(--accent2); }
+
+  /* Timeline */
+  .timeline { position:relative; margin:3rem 0; padding-left:2rem; }
+  .timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--border); }
+  .timeline-item { position:relative; margin-bottom:2rem; padding-left:1.5rem; }
+  .timeline-item::before { content:''; position:absolute; left:-2rem; top:0.5rem; width:12px; height:12px; border-radius:50%; border:2px solid var(--accent); background:var(--bg); }
+  .timeline-item h4 { font-size:1rem; margin-bottom:0.25rem; }
+  .timeline-item p { font-size:0.85rem; color:var(--muted); margin:0; }
+
+  /* Papers grid at bottom */
+  .papers-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2rem; }
+  .paper-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.5rem; transition:transform 0.3s, border-color 0.3s; }
+  .paper-card:hover { transform:translateY(-3px); border-color:var(--accent); }
+  .paper-card .paper-title { font-weight:700; font-size:1rem; margin-bottom:0.5rem; }
+  .paper-card .paper-authors { font-size:0.8rem; color:var(--accent); margin-bottom:0.5rem; }
+  .paper-card .paper-abstract { font-size:0.8rem; color:var(--muted); }
+  .paper-card a { color:var(--accent); text-decoration:none; font-size:0.85rem; display:inline-block; margin-top:0.75rem; }
+  .paper-card a:hover { text-decoration:underline; }
+
+  /* Footer */
+  footer { border-top:1px solid var(--border); padding:3rem 2rem; text-align:center; color:var(--muted); font-size:0.8rem; }
+  footer a { color:var(--accent); text-decoration:none; }
+
+  /* Fade in animation */
+  .fade-in { opacity:0; transform:translateY(30px); transition:opacity 0.6s, transform 0.6s; }
+  .fade-in.visible { opacity:1; transform:translateY(0); }
+
+  /* Tabs */
+  .tabs { display:flex; gap:0; margin-bottom:1.5rem; border-bottom:2px solid var(--border); }
+  .tab-btn { background:none; border:none; color:var(--muted); padding:0.75rem 1.5rem; cursor:pointer; font-size:0.9rem; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+  .tab-btn:hover { color:var(--text); }
+  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* Divider */
+  .divider { width:60px; height:3px; background:linear-gradient(to right, var(--accent), var(--accent2)); border-radius:2px; margin:1rem 0 2rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <div class="logo">Max EPS Paradigm</div>
+    <div class="links">
+      <a href="#framework">Framework</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#capital-structure">Capital Structure</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#investment">Investment</a>
+      <a href="#payout">Payout</a>
+      <a href="#papers">Papers</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <h1>The <span class="highlight">Max EPS</span> Paradigm</h1>
+  <p class="subtitle">A new foundation for corporate finance research</p>
+  <p class="authors">Itzhak Ben-David (Ohio State &amp; NBER) &amp; Alex Chinco (Michigan State)</p>
+
+  <div class="vs">
+    <div class="paradigm old">
+      <h3>NPV Paradigm (Textbook)</h3>
+      <p>Maximize PV of future cash flows</p>
+      <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem">Requires frictions to explain anything</p>
+    </div>
+    <div class="vs-arrow">&rarr;</div>
+    <div class="paradigm new">
+      <h3>EPS Paradigm (Practice)</h3>
+      <p>Maximize Earnings Per Share</p>
+      <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem">Generates predictions without frictions</p>
+    </div>
+  </div>
+
+  <div class="eq-box">
+    <div class="eq">E[EPS] = E[NOI] &minus; i &middot; Debt + r<sub>f</sub> &middot; Cash &nbsp;/&nbsp; #Shares</div>
+    <div class="eq-label">The quantity every CEO fixates on</div>
+  </div>
+
+  <div class="scroll-cue">Scroll to explore<span>&darr;</span></div>
+</div>
+
+
+<!-- ===== FRAMEWORK OVERVIEW ===== -->
+<section id="framework" class="fade-in">
+  <div class="section-label">The Big Picture</div>
+  <h2>One Objective, Three Classic Problems</h2>
+  <p>Every CEO must answer three questions: How should I finance existing assets? Which new projects should I start? When should I return profits to shareholders? These are the three classic problems in corporate finance&mdash;and real-world CEOs solve all three with an eye toward <strong>EPS</strong>.</p>
+  <div class="divider"></div>
+
+  <div class="framework-grid">
+    <div class="fw-card">
+      <div class="icon blue">&#9878;</div>
+      <h3>Capital Structure</h3>
+      <p>Fund assets with the cheapest capital. Equity costs the earnings yield; debt costs the interest rate. Tilt toward whichever demands less earnings.</p>
+    </div>
+    <div class="fw-card">
+      <div class="icon green">&#9881;</div>
+      <h3>Real Investment</h3>
+      <p>A project is accretive if its income yield exceeds the firm's cheapest financing cost. The hurdle rate = min{EY, i, r<sub>f</sub>}.</p>
+    </div>
+    <div class="fw-card">
+      <div class="icon red">&#10070;</div>
+      <h3>Payout Policy</h3>
+      <p>Return cash when you can't invest it accretively. Repurchases generate an accretive pop; dividends bypass the income statement entirely.</p>
+    </div>
+    <div class="fw-card">
+      <div class="icon orange">&#9733;</div>
+      <h3>Value vs. Growth</h3>
+      <p>Value stocks: EY &gt; r<sub>f</sub> &rarr; equity is expensive, lever up. Growth stocks: EY &lt; r<sub>f</sub> &rarr; equity is cheap, stay unlevered.</p>
+    </div>
+    <div class="fw-card">
+      <div class="icon yellow">&#9788;</div>
+      <h3>Asset Pricing (Investor Side)</h3>
+      <p>Analysts don't discount future cash flows. They multiply E[EPS] &times; Trailing P/E. Pricing is backward-looking, not forward-looking.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== PARADIGM COMPARISON ===== -->
+<section class="fade-in">
+  <div class="section-label">Two Worlds</div>
+  <h2>NPV vs. EPS: A Side-by-Side Comparison</h2>
+  <p>The academic paradigm (post-Modigliani &amp; Miller 1958) and the practitioner paradigm have different foundations, inputs, and outputs.</p>
+  <div class="divider"></div>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th></th><th class="col-npv">NPV Paradigm</th><th class="col-eps">EPS Paradigm</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Manager's Objective</strong></td><td>Max PV of future equity payouts</td><td>Max next-year earnings per share</td></tr>
+      <tr><td><strong>Investor's Pricing</strong></td><td>P = &Sigma; discounted future CFs</td><td>P = E[EPS] &times; Trailing P/E</td></tr>
+      <tr><td><strong>Cost of Equity</strong></td><td>Required return from CAPM</td><td>Earnings yield (observable)</td></tr>
+      <tr><td><strong>Capital Structure</strong></td><td>Irrelevant without frictions (MM)</td><td>Determined by EY vs. borrowing cost</td></tr>
+      <tr><td><strong>Investment Rule</strong></td><td>NPV &gt; 0 (risk-adjusted DCF)</td><td>Income yield &gt; min financing cost</td></tr>
+      <tr><td><strong>Payout</strong></td><td>Irrelevant (Miller-Modigliani 1961)</td><td>Repurchases &gt; dividends (accretive)</td></tr>
+      <tr><td><strong>Needs Frictions?</strong></td><td>Yes&mdash;"stone soup"</td><td>No&mdash;"has a flavor all its own"</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ===== INTERACTIVE CALCULATOR ===== -->
+<section id="calculator" class="fade-in">
+  <div class="section-label">Interactive</div>
+  <h2>The EPS Maximizer's Dashboard</h2>
+  <p>Drag the sliders to see how a firm's earnings yield and the risk-free rate determine its optimal strategy. The bright line between value and growth depends on <strong>EY vs. r<sub>f</sub></strong>.</p>
+  <div class="divider"></div>
+
+  <div class="calc-container">
+    <h3>Firm Parameters</h3>
+    <div class="calc-row">
+      <label>P/E Ratio:</label>
+      <input type="range" id="pe" min="5" max="80" value="20" step="1">
+      <span class="val" id="pe-val">20&times;</span>
+    </div>
+    <div class="calc-row">
+      <label>Risk-free Rate (r<sub>f</sub>):</label>
+      <input type="range" id="rf" min="0" max="10" value="4" step="0.25">
+      <span class="val" id="rf-val">4.00%</span>
+    </div>
+    <div class="calc-row">
+      <label>Marginal Interest Rate (i):</label>
+      <input type="range" id="mi" min="0" max="15" value="5" step="0.25">
+      <span class="val" id="mi-val">5.00%</span>
+    </div>
+    <div class="calc-row">
+      <label>Project Income Yield (IY):</label>
+      <input type="range" id="iy" min="0" max="15" value="6" step="0.25">
+      <span class="val" id="iy-val">6.00%</span>
+    </div>
+
+    <!-- Spectrum -->
+    <div style="margin:2rem 0 2.5rem;position:relative">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem">
+        <span>Growth (EY &lt; r<sub>f</sub>)</span><span>Value (EY &gt; r<sub>f</sub>)</span>
+      </div>
+      <div class="vg-spectrum">
+        <div class="marker" id="vg-marker" style="left:50%"></div>
+        <div class="labels"><span style="color:#fff">GROWTH</span><span style="color:#fff">VALUE</span></div>
+        <div class="midline"></div>
+        <div class="midlabel">EY = r<sub>f</sub></div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="calc-result-row">
+        <div class="metric">
+          <div class="big" id="ey-display">5.00%</div>
+          <div class="label">Earnings Yield (EY = 1/PE)</div>
+        </div>
+        <div class="metric">
+          <div class="big" id="excess-ey-display" style="color:var(--red)">+1.00%</div>
+          <div class="label">Excess EY (EY &minus; r<sub>f</sub>)</div>
+        </div>
+        <div class="metric">
+          <div class="big" id="classification" style="color:var(--red)">VALUE STOCK</div>
+          <div class="label">Classification</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs for different policy implications -->
+    <div style="margin-top:2rem">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('tab-cap')">Capital Structure</button>
+        <button class="tab-btn" onclick="showTab('tab-inv')">Investment</button>
+        <button class="tab-btn" onclick="showTab('tab-pay')">Payout</button>
+      </div>
+
+      <div class="tab-content active" id="tab-cap">
+        <div class="calc-result" style="text-align:left">
+          <div id="cap-advice"></div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-inv">
+        <div class="calc-result" style="text-align:left">
+          <div id="inv-advice"></div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-pay">
+        <div class="calc-result" style="text-align:left">
+          <div id="pay-advice"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== PAPER 1: CAPITAL STRUCTURE ===== -->
+<section id="capital-structure" class="fade-in">
+  <div class="paper-section">
+    <div class="paper-header">
+      <div class="paper-num" style="background:rgba(50,136,189,0.15);color:var(--accent)">1</div>
+      <div>
+        <h3>EPS-Maximizing Capital Structure</h3>
+        <p class="paper-desc">There is an optimal leverage even without frictions. Why? Because an EPS maximizer and her creditors measure their slices of the pie differently.</p>
+      </div>
+    </div>
+
+    <p>Modigliani &amp; Miller (1958) proved capital structure is irrelevant when everyone measures value the same way. But an EPS maximizer cares only about <strong>next year's interest payment</strong>, while bond markets price the <strong>present value of all future payments</strong>. Different yardsticks &rarr; different optimal slicing.</p>
+
+    <div class="key-eq">
+      <strong>Key trade-off:</strong> If EY &gt; i &middot; (1 + &delta;) &rarr; equity is expensive, lever up. If EY &lt; i &middot; (1 + &delta;) &rarr; debt is expensive, reduce leverage.
+    </div>
+
+    <p><strong>The bright line:</strong> Whether a firm's unlevered earnings yield is above or below the risk-free rate determines its entire strategy.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0">
+      <div>
+        <h4 style="color:var(--red);margin-bottom:0.75rem">Value Stocks (EY &gt; r<sub>f</sub>)</h4>
+        <ul class="prediction-list value-list">
+          <li>High leverage &mdash; borrow up to riskfree capacity and beyond</li>
+          <li>Actively repurchase shares when EY rises above i</li>
+          <li>Spend cash quickly &mdash; lending at r<sub>f</sub> is a bad deal</li>
+          <li>Issue debt regularly to fund operations</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--accent2);margin-bottom:0.75rem">Growth Stocks (EY &lt; r<sub>f</sub>)</h4>
+        <ul class="prediction-list growth-list">
+          <li>Zero financial leverage &mdash; even riskfree debt is too expensive</li>
+          <li>Rarely repurchase shares &mdash; no margin to readjust</li>
+          <li>Rapidly accumulate cash &mdash; lending at r<sub>f</sub> is a great deal</li>
+          <li>Issue equity to fund operations</li>
+        </ul>
+      </div>
+    </div>
+
+    <p><strong>Empirical evidence:</strong> Value stocks carry 10.2 percentage points more leverage, are 19.8 pp more likely to have nonzero financial leverage, repurchase shares and issue debt at roughly double the rate, and accumulate cash 3&times; slower than growth stocks.</p>
+  </div>
+</section>
+
+
+<!-- ===== PAPER 2: PRICING ===== -->
+<section id="pricing" class="fade-in">
+  <div class="paper-section">
+    <div class="paper-header">
+      <div class="paper-num" style="background:rgba(0,158,115,0.15);color:var(--accent2)">2</div>
+      <div>
+        <h3>Expected EPS &times; Trailing P/E: Pricing Without Discounting</h3>
+        <p class="paper-desc">How do investors actually price stocks? Not by discounting future cash flows. They multiply expected earnings times a backward-looking multiple.</p>
+      </div>
+    </div>
+
+    <p>FINRA Rule 2241 requires analysts to explain their valuation method in every report. In a sample of <strong>513 analyst reports</strong>, 76.8% set price targets by multiplying expected EPS times the company's trailing P/E ratio. Only 30.2% even mention DCF analysis.</p>
+
+    <div class="key-eq">
+      <strong>How analysts actually price:</strong> Price Target = E[EPS] &times; Trailing P/E
+    </div>
+
+    <div class="calc-container">
+      <h3>Try it: The Analyst's Formula</h3>
+      <div class="calc-row">
+        <label>Expected EPS ($/share):</label>
+        <input type="range" id="a-eps" min="1" max="30" value="11.50" step="0.25">
+        <span class="val" id="a-eps-val">$11.50</span>
+      </div>
+      <div class="calc-row">
+        <label>Trailing P/E (avg 3yr):</label>
+        <input type="range" id="a-pe" min="5" max="60" value="21" step="0.5">
+        <span class="val" id="a-pe-val">21.0&times;</span>
+      </div>
+      <div class="calc-result">
+        <div class="big" id="pt-result" style="color:var(--accent2)">$241.50</div>
+        <div class="label">Implied Price Target = E[EPS] &times; Trailing P/E</div>
+        <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted)">This simple formula explains R&sup2; &asymp; 90% of price-target variation in IBES</div>
+      </div>
+    </div>
+
+    <p><strong>Key insight:</strong> A trailing P/E is <strong>backward-looking</strong>. The Gordon model's "correct" multiple is forward-looking: 1/(r &minus; g). But analysts don't use it. They ask: "How did the market price last year's earnings?" This is yield-based pricing using comps, not discounted cash flow.</p>
+
+    <ul class="prediction-list mixed-list">
+      <li>94.5% of reports use some form of trailing multiple</li>
+      <li>Trailing PEs produce price targets that are roughly correct on average</li>
+      <li>The simple model predicts how price targets and market prices respond to earnings news</li>
+      <li>EPS surprises mechanically move prices because analysts re-apply the same multiple to updated earnings</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ===== PAPER 3: INVESTMENT ===== -->
+<section id="investment" class="fade-in">
+  <div class="paper-section">
+    <div class="paper-header">
+      <div class="paper-num" style="background:rgba(244,109,67,0.15);color:var(--orange)">3</div>
+      <div>
+        <h3>Capital Budgeting for EPS Maximizers</h3>
+        <p class="paper-desc">Maximizing EPS &ne; minimizing investment. EPS maximizers use real investment to arbitrage between asset and capital markets.</p>
+      </div>
+    </div>
+
+    <p>The conventional wisdom is that EPS fixation leads to chronic underinvestment. IBM's CEO laid out an explicit EPS roadmap in 2006&mdash;and <strong>invested his way to 17%/year EPS growth</strong>. "Growth Initiatives &amp; Acquisitions" accounted for $2.10/share of IBM's $5.47/share gain. Only $1.30 came from share repurchases.</p>
+
+    <div class="key-eq">
+      <strong>The EPS investment rule:</strong> Invest if Income Yield &gt; Financing Yield = min{EY, i, r<sub>f</sub>}
+    </div>
+
+    <div class="calc-container">
+      <h3>Investment Decision Calculator</h3>
+      <div class="calc-row">
+        <label>Project Cost ($M):</label>
+        <input type="range" id="inv-cost" min="10" max="500" value="100" step="10">
+        <span class="val" id="inv-cost-val">$100M</span>
+      </div>
+      <div class="calc-row">
+        <label>Year-1 Income Boost ($M):</label>
+        <input type="range" id="inv-income" min="0" max="50" value="5" step="0.5">
+        <span class="val" id="inv-income-val">$5.0M</span>
+      </div>
+      <div class="calc-row">
+        <label>Earnings Yield (EY):</label>
+        <input type="range" id="inv-ey" min="1" max="15" value="5" step="0.25">
+        <span class="val" id="inv-ey-val">5.00%</span>
+      </div>
+      <div class="calc-row">
+        <label>Marginal Interest Rate:</label>
+        <input type="range" id="inv-mi" min="1" max="12" value="4" step="0.25">
+        <span class="val" id="inv-mi-val">4.00%</span>
+      </div>
+      <div class="calc-row">
+        <label>Risk-free Rate:</label>
+        <input type="range" id="inv-rf" min="0" max="8" value="3" step="0.25">
+        <span class="val" id="inv-rf-val">3.00%</span>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-row">
+          <div class="metric">
+            <div class="big" id="inv-iy-display">5.00%</div>
+            <div class="label">Income Yield (IY)</div>
+          </div>
+          <div class="metric">
+            <div class="big" id="inv-fy-display">3.00%</div>
+            <div class="label">Financing Yield (min cost)</div>
+          </div>
+          <div class="metric">
+            <div class="big" id="inv-decision" style="color:var(--accent2)">INVEST</div>
+            <div class="label">Decision</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;font-size:0.9rem" id="inv-detail"></div>
+      </div>
+    </div>
+
+    <p><strong>IRRs and payback periods fit naturally:</strong> An IRR is a multi-period income yield. A payback period is just 1/IY quoted as a multiple. EPS maximizers like short payback periods for the same reason they like acquiring targets at a low P/E multiple.</p>
+
+    <ul class="prediction-list mixed-list">
+      <li><strong>M&amp;A payment method:</strong> Cash deals when r<sub>f</sub> or i are cheap; stock deals when EY is cheap</li>
+      <li><strong>Investment-cash flow sensitivity:</strong> Strongest for value stocks whose cheapest funding is internal cash</li>
+      <li><strong>Convertible bonds:</strong> Growth stocks issue convertibles to access cheap quasi-equity financing</li>
+      <li><strong>Capitalized interest:</strong> During construction, EPS maximizers capitalize rather than expense interest</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ===== PAPER 4: PAYOUT ===== -->
+<section id="payout" class="fade-in">
+  <div class="paper-section">
+    <div class="paper-header">
+      <div class="paper-num" style="background:rgba(254,196,79,0.15);color:var(--yellow)">4</div>
+      <div>
+        <h3>EPS-Maximizing Payout Policy</h3>
+        <p class="paper-desc">Cash retention has a cost: the earnings yield. Return cash when you can't beat that yield by investing. Repurchases are accretive; dividends are not.</p>
+      </div>
+    </div>
+
+    <div class="key-eq">
+      <strong>Retain vs. Return:</strong> Cash Yield (CY) = (1 &minus; &theta;) &middot; r<sub>f</sub> + &theta; &middot; IY<br>
+      If CY &gt; EY &rarr; keep cash. If CY &lt; EY &rarr; return cash to shareholders.
+    </div>
+
+    <p><strong>The fundamental tension:</strong> A high excess earnings yield (EY &minus; r<sub>f</sub>) makes internal cash cheap to spend, but the same spread makes buybacks more attractive. The companies that benefit most from cash-funded projects face the strongest pressure to distribute.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0">
+      <div>
+        <h4 style="color:var(--accent2);margin-bottom:0.75rem">Growth Stocks (EY &lt; r<sub>f</sub>)</h4>
+        <ul class="prediction-list growth-list">
+          <li>Always retain cash &mdash; lending at r<sub>f</sub> clears their low EY hurdle</li>
+          <li>Never return cash to shareholders</li>
+          <li>Fund projects with equity, not cash</li>
+          <li>Cash builds up on the balance sheet</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--red);margin-bottom:0.75rem">Value Stocks (EY &gt; r<sub>f</sub>)</h4>
+        <ul class="prediction-list value-list">
+          <li>Return cash unless enough high-yield projects exist</li>
+          <li>Prefer repurchases (accretive pop)</li>
+          <li>Cash is their cheapest capital, but retention hurdle is high</li>
+          <li>Marginal value stocks (EY &asymp; r<sub>f</sub>) are most likely to pay dividends</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="calc-container">
+      <h3>Payout Decision Calculator</h3>
+      <div class="calc-row">
+        <label>Cash Windfall ($M):</label>
+        <input type="range" id="pay-cash" min="50" max="500" value="200" step="10">
+        <span class="val" id="pay-cash-val">$200M</span>
+      </div>
+      <div class="calc-row">
+        <label>P/E Ratio:</label>
+        <input type="range" id="pay-pe" min="5" max="60" value="20" step="1">
+        <span class="val" id="pay-pe-val">20&times;</span>
+      </div>
+      <div class="calc-row">
+        <label>Risk-free Rate:</label>
+        <input type="range" id="pay-rf" min="0" max="8" value="3" step="0.25">
+        <span class="val" id="pay-rf-val">3.00%</span>
+      </div>
+      <div class="calc-row">
+        <label>Available Projects ($M):</label>
+        <input type="range" id="pay-proj" min="0" max="500" value="150" step="10">
+        <span class="val" id="pay-proj-val">$150M</span>
+      </div>
+      <div class="calc-row">
+        <label>Avg Project Income Yield:</label>
+        <input type="range" id="pay-iy" min="1" max="15" value="6" step="0.25">
+        <span class="val" id="pay-iy-val">6.00%</span>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-row">
+          <div class="metric">
+            <div class="big" id="pay-ey-display">5.00%</div>
+            <div class="label">Earnings Yield (buyback hurdle)</div>
+          </div>
+          <div class="metric">
+            <div class="big" id="pay-cy-display">4.50%</div>
+            <div class="label">Cash Yield (retention income)</div>
+          </div>
+          <div class="metric">
+            <div class="big" id="pay-decision">RETURN</div>
+            <div class="label">Decision</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;font-size:0.9rem" id="pay-detail"></div>
+      </div>
+    </div>
+
+    <p><strong>Why dividends are dominated:</strong> Repurchases and dividends both deliver the same value to shareholders. But only repurchases boost EPS. Hence, EPS maximizers always prefer buybacks. When a firm pays dividends anyway, it must be due to forces outside the model&mdash;and the prediction is this happens most for <strong>marginal value stocks</strong> where the accretive pull of buybacks is weakest.</p>
+  </div>
+</section>
+
+
+<!-- ===== THE BIG PICTURE ===== -->
+<section class="fade-in">
+  <div class="section-label">Tying It Together</div>
+  <h2>The Max EPS Paradigm: A Complete Framework</h2>
+  <div class="divider"></div>
+
+  <p>The five papers in this research program form a unified alternative to the textbook NPV paradigm. Two sides of the same coin:</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2rem 0">
+    <div class="fw-card" style="border-color:var(--accent)">
+      <h3 style="color:var(--accent)">Manager Side: Max EPS</h3>
+      <p>CEOs take the earnings yield as the <strong>market price of equity</strong>. If EY exceeds the borrowing rate, equity is "expensive"&mdash;so they lever up and repurchase shares. All corporate policies (leverage, payout, M&amp;A, investment) are means to <strong>boost EPS</strong>.</p>
+    </div>
+    <div class="fw-card" style="border-color:var(--accent2)">
+      <h3 style="color:var(--accent2)">Investor Side: EPS &times; P/E</h3>
+      <p>Investors capitalize current earnings using comparables. Nobody computes NPV&mdash;they use cap rates, comps, and multiples. The discount rate is the <strong>earnings yield itself</strong>, observable from price and earnings.</p>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>Pre-1958: The Capitalization Era</h4>
+      <p>Graham, Solomon, Dean, Berle all assumed earnings capitalization. EPS was the default framework for corporate finance.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>1958: Modigliani &amp; Miller</h4>
+      <p>Changed the academic objective function from EPS to NPV. The irrelevance theorems assume everyone uses present-value logic.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>1958&ndash;Present: The Friction Industry</h4>
+      <p>Since NPV explains nothing without frictions, academics spent decades adding taxes, information asymmetry, agency costs, etc.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>2024&ndash;Present: The Max EPS Paradigm</h4>
+      <p>Ben-David &amp; Chinco propose restoring the original objective. Not because MM's logic is wrong, but because managers and investors use a different system.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== PAPERS ===== -->
+<section id="papers" class="fade-in">
+  <div class="section-label">The Research Program</div>
+  <h2>Papers</h2>
+  <div class="divider"></div>
+
+  <div class="papers-grid">
+    <div class="paper-card">
+      <div class="paper-title">The Max EPS Paradigm for Corporate Finance</div>
+      <div class="paper-authors">Ben-David &amp; Chinco (2026)</div>
+      <div class="paper-abstract">Overview paper. The max EPS approach delivers optimal leverage without frictions, an investment rule based on yield comparisons, and a payout policy where accretive buybacks dominate neutral dividends.</div>
+      <a href="https://www.alexchinco.com/max-EPS-paradigm.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+
+    <div class="paper-card">
+      <div class="paper-title">EPS-Maximizing Capital Structure</div>
+      <div class="paper-authors">Ben-David &amp; Chinco (2025)</div>
+      <div class="paper-abstract">The simplest possible max EPS model predicts leverage, new issuance, share repurchases, and cash holdings. Novel microfoundation for value vs. growth: firms with EY above r<sub>f</sub> lever up; those below stay unlevered.</div>
+      <a href="https://www.alexchinco.com/eps-maximizing-capital-structure.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+
+    <div class="paper-card">
+      <div class="paper-title">Expected EPS &times; Trailing PE: Pricing Without Discounting</div>
+      <div class="paper-authors">Ben-David &amp; Chinco (2025)</div>
+      <div class="paper-abstract">Reading 513 analyst reports reveals that 76.8% set price targets using E[EPS] &times; Trailing PE. Only 30.2% mention DCF. This simple formula accounts for R&sup2; &asymp; 90% of price-target variation in IBES.</div>
+      <a href="https://www.alexchinco.com/expected-eps-times-trailing-pe.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+
+    <div class="paper-card">
+      <div class="paper-title">Capital Budgeting for EPS Maximizers</div>
+      <div class="paper-authors">Ben-David &amp; Chinco (2026)</div>
+      <div class="paper-abstract">Max EPS &ne; min investment. EPS maximizers arbitrage between asset and capital markets. The framework rationalizes IRRs, payback periods, and explains M&amp;A payment method and investment-cash flow sensitivity.</div>
+      <a href="https://www.alexchinco.com/capital-budgeting-for-eps-maximizers.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+
+    <div class="paper-card">
+      <div class="paper-title">EPS-Maximizing Payout Policy</div>
+      <div class="paper-authors">Ben-David &amp; Chinco (2026)</div>
+      <div class="paper-abstract">EPS maximizers retain cash only when its blended income yield beats the earnings yield. They prefer repurchases over dividends. Dividend payers concentrate among marginal value stocks where the buyback pull is weakest.</div>
+      <a href="https://www.alexchinco.com/max-EPS-payout-policy.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <p>&copy; 2026 Itzhak Ben-David &amp; Alex Chinco &nbsp;|&nbsp;
+    <a href="mailto:ben-david.1@osu.edu">ben-david.1@osu.edu</a> &nbsp;|&nbsp;
+    <a href="mailto:alexchinco@gmail.com">alexchinco@gmail.com</a>
+  </p>
+  <p style="margin-top:0.5rem">The Ohio State University &amp; NBER &nbsp;&bull;&nbsp; Michigan State University</p>
+</footer>
+
+
+<script>
+// ===== Fade-in on scroll =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ===== Tab switching =====
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== Main Dashboard Calculator =====
+function updateDashboard() {
+  const pe = +document.getElementById('pe').value;
+  const rf = +document.getElementById('rf').value;
+  const mi = +document.getElementById('mi').value;
+  const iy = +document.getElementById('iy').value;
+  const ey = (1/pe)*100;
+  const excessEY = ey - rf;
+
+  document.getElementById('pe-val').textContent = pe + '\u00d7';
+  document.getElementById('rf-val').textContent = rf.toFixed(2) + '%';
+  document.getElementById('mi-val').textContent = mi.toFixed(2) + '%';
+  document.getElementById('iy-val').textContent = iy.toFixed(2) + '%';
+
+  document.getElementById('ey-display').textContent = ey.toFixed(2) + '%';
+  const exEl = document.getElementById('excess-ey-display');
+  exEl.textContent = (excessEY >= 0 ? '+' : '') + excessEY.toFixed(2) + '%';
+  exEl.style.color = excessEY >= 0 ? 'var(--red)' : 'var(--accent2)';
+
+  const classEl = document.getElementById('classification');
+  if (excessEY > 0) {
+    classEl.textContent = 'VALUE STOCK';
+    classEl.style.color = 'var(--red)';
+  } else {
+    classEl.textContent = 'GROWTH STOCK';
+    classEl.style.color = 'var(--accent2)';
+  }
+
+  // Marker on spectrum (EY range 0-15, map to 0-100%)
+  const pct = Math.min(Math.max((ey / 15) * 100, 2), 98);
+  document.getElementById('vg-marker').style.left = pct + '%';
+
+  // Capital structure advice
+  const capDiv = document.getElementById('cap-advice');
+  const hurdle = Math.min(ey, mi, rf);
+  if (excessEY > 0) {
+    capDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">Value Stock Strategy</div>
+      <p style="color:var(--muted);font-size:0.9rem">Equity is expensive at <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> vs. riskfree borrowing at <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Each $1 shifted from equity to riskfree debt frees up <strong style="color:var(--text)">${(ey-rf).toFixed(2)}&#162;</strong> of expected earnings.</p>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem"><strong style="color:var(--text)">Prescription:</strong> Max out riskfree borrowing. Continue borrowing at <strong style="color:var(--text)">i = ${mi.toFixed(1)}%</strong> as long as i &lt; EY. ${mi < ey ? 'Currently, debt is still cheaper\u2014keep levering up.' : 'Currently, marginal debt is too expensive\u2014at optimal leverage.'}</p>`;
+  } else {
+    capDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">Growth Stock Strategy</div>
+      <p style="color:var(--muted);font-size:0.9rem">Equity is cheap at <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> vs. riskfree borrowing at <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Even riskfree debt costs more than equity financing.</p>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem"><strong style="color:var(--text)">Prescription:</strong> Zero financial leverage. Fund everything with equity. Accumulate cash aggressively\u2014lending at r<sub>f</sub> = ${rf.toFixed(1)}% is profitable when you borrow at EY = ${ey.toFixed(1)}%.</p>`;
+  }
+
+  // Investment advice
+  const invDiv = document.getElementById('inv-advice');
+  const cheapest = hurdle;
+  const cheapLabel = cheapest === rf ? 'cash (r_f)' : cheapest === mi ? 'debt (i)' : 'equity (EY)';
+  if (iy > cheapest) {
+    invDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">ACCRETIVE \u2014 Invest!</div>
+      <p style="color:var(--muted);font-size:0.9rem">Income yield <strong style="color:var(--text)">${iy.toFixed(1)}%</strong> > financing yield <strong style="color:var(--text)">${cheapest.toFixed(1)}%</strong> (${cheapLabel}). The project adds <strong style="color:var(--accent2)">+${(iy-cheapest).toFixed(2)}&#162;</strong> per $1 invested to next year's earnings.</p>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem">Finance with ${cheapLabel}. Payback period: <strong style="color:var(--text)">${(1/(iy/100)).toFixed(1)} years</strong>.</p>`;
+  } else {
+    invDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">DILUTIVE \u2014 Don't invest</div>
+      <p style="color:var(--muted);font-size:0.9rem">Income yield <strong style="color:var(--text)">${iy.toFixed(1)}%</strong> < financing yield <strong style="color:var(--text)">${cheapest.toFixed(1)}%</strong> (${cheapLabel}). The project would drag earnings by <strong style="color:var(--red)">${(iy-cheapest).toFixed(2)}&#162;</strong> per $1 invested.</p>`;
+  }
+
+  // Payout advice
+  const payDiv = document.getElementById('pay-advice');
+  if (excessEY <= 0) {
+    payDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETAIN \u2014 Growth stocks never return cash</div>
+      <p style="color:var(--muted);font-size:0.9rem">Cash yield from Treasuries: <strong style="color:var(--text)">${rf.toFixed(1)}%</strong> > Earnings yield: <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>. Even parking cash in T-bills beats the cost of equity. Retain everything.</p>`;
+  } else {
+    const cySimple = rf; // simplified: assume pure Treasury
+    if (cySimple > ey) {
+      payDiv.innerHTML = `<div style="color:var(--accent2);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETAIN \u2014 Cash yield exceeds earnings yield</div>
+        <p style="color:var(--muted);font-size:0.9rem">If projects offer high enough yields, retaining is accretive. But value stocks face a high hurdle: EY = <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>.</p>`;
+    } else {
+      payDiv.innerHTML = `<div style="color:var(--red);font-weight:700;font-size:1.1rem;margin-bottom:0.5rem">RETURN \u2014 Buybacks are more accretive</div>
+        <p style="color:var(--muted);font-size:0.9rem">Earnings yield <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> > Treasury yield <strong style="color:var(--text)">${rf.toFixed(1)}%</strong>. Without enough high-yield projects, the CEO should buy back shares. ${excessEY < 2 ? '<strong style="color:var(--yellow)">Marginal value stock \u2014 dividend pressure is strongest here.</strong>' : 'Deep value stock \u2014 strong accretive pull toward repurchases.'}</p>`;
+    }
+  }
+}
+['pe','rf','mi','iy'].forEach(id => document.getElementById(id).addEventListener('input', updateDashboard));
+updateDashboard();
+
+// ===== Analyst Pricing Calculator =====
+function updatePricing() {
+  const eps = +document.getElementById('a-eps').value;
+  const pe = +document.getElementById('a-pe').value;
+  document.getElementById('a-eps-val').textContent = '$' + eps.toFixed(2);
+  document.getElementById('a-pe-val').textContent = pe.toFixed(1) + '\u00d7';
+  document.getElementById('pt-result').textContent = '$' + (eps * pe).toFixed(2);
+}
+['a-eps','a-pe'].forEach(id => document.getElementById(id).addEventListener('input', updatePricing));
+updatePricing();
+
+// ===== Investment Calculator =====
+function updateInvestment() {
+  const cost = +document.getElementById('inv-cost').value;
+  const income = +document.getElementById('inv-income').value;
+  const ey = +document.getElementById('inv-ey').value;
+  const mi = +document.getElementById('inv-mi').value;
+  const rf = +document.getElementById('inv-rf').value;
+  const iy = (income / cost) * 100;
+  const fy = Math.min(ey, mi, rf);
+  const fyLabel = fy === rf ? 'cash' : fy === mi ? 'debt' : 'equity';
+
+  document.getElementById('inv-cost-val').textContent = '$' + cost + 'M';
+  document.getElementById('inv-income-val').textContent = '$' + income.toFixed(1) + 'M';
+  document.getElementById('inv-ey-val').textContent = ey.toFixed(2) + '%';
+  document.getElementById('inv-mi-val').textContent = mi.toFixed(2) + '%';
+  document.getElementById('inv-rf-val').textContent = rf.toFixed(2) + '%';
+  document.getElementById('inv-iy-display').textContent = iy.toFixed(2) + '%';
+  document.getElementById('inv-fy-display').textContent = fy.toFixed(2) + '% (' + fyLabel + ')';
+
+  const dec = document.getElementById('inv-decision');
+  const detail = document.getElementById('inv-detail');
+  const earnings_impact = (iy - fy) / 100 * cost;
+
+  if (iy > fy) {
+    dec.textContent = 'INVEST';
+    dec.style.color = 'var(--accent2)';
+    detail.innerHTML = `<span style="color:var(--accent2)">Accretive:</span> <span style="color:var(--muted)">Project adds <strong style="color:var(--text)">+$${earnings_impact.toFixed(1)}M</strong> to next year's earnings. Finance with <strong style="color:var(--text)">${fyLabel}</strong> at ${fy.toFixed(1)}%. Payback: ${(cost/income).toFixed(1)} years.</span>`;
+  } else {
+    dec.textContent = 'DON\'T INVEST';
+    dec.style.color = 'var(--red)';
+    detail.innerHTML = `<span style="color:var(--red)">Dilutive:</span> <span style="color:var(--muted)">Project would reduce earnings by <strong style="color:var(--text)">$${Math.abs(earnings_impact).toFixed(1)}M</strong>. Even using the cheapest capital (${fyLabel} at ${fy.toFixed(1)}%), the project doesn't cover its funding cost.</span>`;
+  }
+}
+['inv-cost','inv-income','inv-ey','inv-mi','inv-rf'].forEach(id => document.getElementById(id).addEventListener('input', updateInvestment));
+updateInvestment();
+
+// ===== Payout Calculator =====
+function updatePayout() {
+  const cash = +document.getElementById('pay-cash').value;
+  const pe = +document.getElementById('pay-pe').value;
+  const rf = +document.getElementById('pay-rf').value;
+  const proj = +document.getElementById('pay-proj').value;
+  const iy = +document.getElementById('pay-iy').value;
+  const ey = (1/pe)*100;
+  const theta = Math.min(proj / cash, 1);
+  const remaining = cash - Math.min(proj, cash);
+  const cy = (1-theta)*rf + theta*iy;
+
+  document.getElementById('pay-cash-val').textContent = '$' + cash + 'M';
+  document.getElementById('pay-pe-val').textContent = pe + '\u00d7';
+  document.getElementById('pay-rf-val').textContent = rf.toFixed(2) + '%';
+  document.getElementById('pay-proj-val').textContent = '$' + proj + 'M';
+  document.getElementById('pay-iy-val').textContent = iy.toFixed(2) + '%';
+  document.getElementById('pay-ey-display').textContent = ey.toFixed(2) + '%';
+  document.getElementById('pay-cy-display').textContent = cy.toFixed(2) + '%';
+
+  const dec = document.getElementById('pay-decision');
+  const detail = document.getElementById('pay-detail');
+
+  const retainIncome = cy / 100 * cash;
+  const buybackSavings = ey / 100 * cash;
+
+  if (ey < rf) {
+    dec.textContent = 'RETAIN';
+    dec.style.color = 'var(--accent2)';
+    detail.innerHTML = `<span style="color:var(--accent2)">Growth stock:</span> <span style="color:var(--muted)">Even parking all cash in Treasuries yields <strong style="color:var(--text)">${rf.toFixed(1)}%</strong> > EY of <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>. Retention income: <strong style="color:var(--text)">$${(rf/100*cash).toFixed(1)}M</strong> vs. buyback savings of $${buybackSavings.toFixed(1)}M. Keep everything.</span>`;
+  } else if (cy > ey) {
+    dec.textContent = 'RETAIN';
+    dec.style.color = 'var(--accent2)';
+    detail.innerHTML = `<span style="color:var(--accent2)">Invest and retain:</span> <span style="color:var(--muted)">Cash yield <strong style="color:var(--text)">${cy.toFixed(1)}%</strong> > EY <strong style="color:var(--text)">${ey.toFixed(1)}%</strong>. Investing $${Math.min(proj,cash)}M in projects (IY=${iy.toFixed(1)}%) and parking $${remaining.toFixed(0)}M in Treasuries generates <strong style="color:var(--text)">$${retainIncome.toFixed(1)}M</strong> > buyback savings of $${buybackSavings.toFixed(1)}M.</span>`;
+  } else {
+    dec.textContent = 'RETURN';
+    dec.style.color = 'var(--red)';
+    const isMarginal = (ey - rf) < 2;
+    detail.innerHTML = `<span style="color:var(--red)">Distribute via buybacks:</span> <span style="color:var(--muted)">EY <strong style="color:var(--text)">${ey.toFixed(1)}%</strong> > Cash yield <strong style="color:var(--text)">${cy.toFixed(1)}%</strong>. Buyback savings: <strong style="color:var(--text)">$${buybackSavings.toFixed(1)}M</strong> > retention income of $${retainIncome.toFixed(1)}M. ${isMarginal ? '<strong style="color:var(--yellow)">Marginal value stock\u2014dividend pressure is strong here.</strong>' : 'Deep value stock\u2014repurchases dominate.'}</span>`;
+  }
+}
+['pay-cash','pay-pe','pay-rf','pay-proj','pay-iy'].forEach(id => document.getElementById(id).addEventListener('input', updatePayout));
+updatePayout();
+</script>
+
+</body>
+</html>
